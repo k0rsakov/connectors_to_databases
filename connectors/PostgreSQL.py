@@ -1,16 +1,11 @@
+from typing import Union
+
 from sqlalchemy import create_engine
 import pandas as pd
 
 class PostgreSQL:
     """
-    Класс для работы с БД PostgreSQL
-
-    Принимаемые параметры:
-        - `host` – хост базы данных в `str` формате, по умолчанию ='localhost'
-        - `database` – название базы данных в `str` формате, по умолчанию 'postgres'
-        - `login` – логин для авторизации в `str` формате, по умолчанию 'postgres'
-        - `password` – пароль для авторизации в `str` формате, по умолчанию 'postgres'
-        - `port` – порт базы данных в `int` формате, по умолчанию 5432
+    Connector to PostgreSQL database
     """
     def __init__(self,
                  host: str = 'localhost',
@@ -19,6 +14,13 @@ class PostgreSQL:
                  password: str = 'postgres',
                  port: int = 5432
                  ):
+        """
+        :param host:str: Host/IP database; default 'localhost'.
+        :param database:str: name database; default 'localhost'.
+        :param port:int: port database; default 5432.
+        :param login:str: login to database; default 'postgres'.
+        :param password:str: password to database; default 'postgres'.
+        """
         self.host = host
         self.db = database
         self.login = login
@@ -27,57 +29,55 @@ class PostgreSQL:
 
     def authorization_pg(self):
         """
-        Создание коннектора к БД PostgreSQL
+        Creating connector engine to database postgresql.
         """
+
         engine_str = f'postgresql://{self.login}:{self.password}@{self.host}:{self.port}/{self.db}'
         engine = create_engine(engine_str)
 
         return engine
 
     def into_pg_table(self,
-                      pg_table_name: str,
-                      df: pd.DataFrame,
-                      schema: str = 'public'
-                      ) -> bool:
+                      df: pd.DataFrame = None,
+                      pg_table_name: str = None,
+                      pg_table_schema: str = 'public',
+                      ) -> Union[int, None, Exception]:
         """
-        Помещение данных в БД PostgreSQL
+        Inserting data from dataframe to database
 
-        Принимаемые атрибуты:
-            - `pg_table_name` – название таблицы для помещения в `str` формате
-            - `df` – pd.DataFrame для помещения в базу данных
-            - `schema` – название схемы для помещения в `str` формате, по умолчанию 'public'
-
-        Возвращает:
-            - True при успехе
+        :param df:pd.DataFrame: dataframe with data; default None
+        :param pg_table_name:str: name of table; default None.
+        :param pg_table_schema: name of schema; default 'public'.
+        :return:
         """
+
         try:
-            dataframe = df
             connector = self.authorization_pg()
-            dataframe.to_sql(
+            df.to_sql(
                 name=pg_table_name,
-                schema=schema,
+                schema=pg_table_schema,
                 con=connector,
-                chunksize=10000,
+                chunksize=10024,
                 index=False,
                 if_exists='append'
             )
-            return True
-        except Exception:
+        except Exception as ex:
             print(f"Can't insert df in {pg_table_name}")
+            raise ex
 
     def execute_to_df(
             self,
-            query: str,) -> pd.DataFrame:
+            sql_query: str = '',
+    ) -> Union[pd.DataFrame, Exception]:
         """
-        Метод для извлечения df из БД
+        Getting data from database with SQL-query.
 
-        Принимаемые атрибуты:
-            - `query` – SQL-запрос в `str` формате.
-
-        Возвращает:
-            - pd.DataFrame
+        :param sql_query:str: SQL-query; default ''.
+        :return:pd.DataFrame: dataframe with data from database
         """
+
         try:
-            return pd.read_sql(query, self.authorization_pg())
-        except Exception:
+            return pd.read_sql(sql_query, self.authorization_pg())
+        except Exception as ex:
             print(f"Can't execute df from PostgreSQL")
+            raise ex
