@@ -3,6 +3,11 @@ from typing import Union
 from sqlalchemy import create_engine
 import pandas as pd
 
+# TODO add exception on wrong auth
+# TODO add exception on permission
+# TODO execute command (TRUNCATE, DROP, etc)
+# TODO UndefinedColumn: column "<name>" of relation "<relation>" does not exist
+# TODO create method with only engine str for manual operations
 class PostgreSQL:
     """
     Connector to PostgreSQL database

@@ -27,7 +27,7 @@ setup(
     download_url='https://github.com/k0rsakov/connectors_to_databases/archive/refs/heads/main.zip',
 
     packages=['connectors_to_databases'],
-    install_requires=['SQLAlchemy', 'pandas'],
+    install_requires=['SQLAlchemy', 'pandas', 'psycopg2'],
 
     classifiers=[
         'Programming Language :: Python',
