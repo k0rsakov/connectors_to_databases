@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, engine
 
 import pandas as pd
 
-from TypeHinting import SQLQuery
+from .TypeHinting import SQLQuery
 
 class PostgreSQL:
     """
