@@ -1,13 +1,15 @@
 from typing import Union
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, engine
 import pandas as pd
+
+from TypeHinting import SQLQuery
 
 # TODO add exception on wrong auth
 # TODO add exception on permission
-# TODO execute command (TRUNCATE, DROP, etc)
 # TODO UndefinedColumn: column "<name>" of relation "<relation>" does not exist
 # TODO create method with only engine str for manual operations
+
 class PostgreSQL:
     """
     Connector to PostgreSQL database
@@ -27,20 +29,20 @@ class PostgreSQL:
         :param password:str: password to database; default 'postgres'.
         """
         self.host = host
-        self.db = database
+        self.database = database
         self.login = login
         self.password = password
         self.port = port
 
-    def authorization_pg(self):
+    def authorization_pg(self) -> engine.base.Engine:
         """
         Creating connector engine to database postgresql.
         """
 
-        engine_str = f'postgresql://{self.login}:{self.password}@{self.host}:{self.port}/{self.db}'
-        engine = create_engine(engine_str)
+        engine_str = f'postgresql://{self.login}:{self.password}@{self.host}:{self.port}/{self.database}'
+        engine_connector = create_engine(engine_str)
 
-        return engine
+        return engine_connector
 
     def into_pg_table(self,
                       df: pd.DataFrame = None,
@@ -86,3 +88,12 @@ class PostgreSQL:
         except Exception as ex:
             print(f"Can't execute df from PostgreSQL")
             raise ex
+
+    def execute_script(self,
+                       ddl_sql_script: SQLQuery):
+        """
+
+        :return:
+        """
+        self.authorization_pg().execute(ddl_sql_script)
+

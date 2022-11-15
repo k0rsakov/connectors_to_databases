@@ -1,0 +1,9 @@
+"""
+-
+"""
+SQLQuery = str
+
+"""
+
+"""
+SQLDDLQuery = str
