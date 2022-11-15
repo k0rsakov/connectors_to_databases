@@ -12,10 +12,10 @@ class PostgreSQL:
     """
     def __init__(self,
                  host: str = 'localhost',
+                 port: int = 5432,
                  database: str = 'postgres',
                  login: str = 'postgres',
                  password: str = 'postgres',
-                 port: int = 5432,
                  ):
         """
         :param host:str: Host/IP database; default 'localhost'.
