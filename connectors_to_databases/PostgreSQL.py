@@ -1,14 +1,10 @@
 from typing import Union
 
 from sqlalchemy import create_engine, engine
+
 import pandas as pd
 
 from TypeHinting import SQLQuery
-
-# TODO add exception on wrong auth
-# TODO add exception on permission
-# TODO UndefinedColumn: column "<name>" of relation "<relation>" does not exist
-# TODO create method with only engine str for manual operations
 
 class PostgreSQL:
     """
@@ -19,7 +15,7 @@ class PostgreSQL:
                  database: str = 'postgres',
                  login: str = 'postgres',
                  password: str = 'postgres',
-                 port: int = 5432
+                 port: int = 5432,
                  ):
         """
         :param host:str: Host/IP database; default 'localhost'.
@@ -28,18 +24,19 @@ class PostgreSQL:
         :param login:str: login to database; default 'postgres'.
         :param password:str: password to database; default 'postgres'.
         """
-        self.host = host
-        self.database = database
-        self.login = login
-        self.password = password
-        self.port = port
+        self.__host__ = host
+        self.__database__ = database
+        self.__login__ = login
+        self.__password__ = password
+        self.__port__ = port
 
-    def authorization_pg(self) -> engine.base.Engine:
+    def __authorization_pg__(self) -> engine.base.Engine:
         """
-        Creating connector engine to database postgresql.
+        Creating connector engine to database PostgreSQL.
         """
 
-        engine_str = f'postgresql://{self.login}:{self.password}@{self.host}:{self.port}/{self.database}'
+        engine_str = f'postgresql://' \
+                     f'{self.__login__}:{self.__password__}@{self.__host__}:{self.__port__}/{self.__database__}'
         engine_connector = create_engine(engine_str)
 
         return engine_connector
@@ -48,33 +45,40 @@ class PostgreSQL:
                       df: pd.DataFrame = None,
                       pg_table_name: str = None,
                       pg_table_schema: str = 'public',
-                      ) -> Union[int, None, Exception]:
+                      chunksize: Union[int, None] = 10024,
+                      index: bool = False,
+                      if_exists:str = 'append',
+                      ) -> Union[None, Exception]:
         """
         Inserting data from dataframe to database
 
-        :param df:pd.DataFrame: dataframe with data; default None
+        :param df:pd.DataFrame: dataframe with data; default None.
         :param pg_table_name:str: name of table; default None.
         :param pg_table_schema: name of schema; default 'public'.
-        :return:
+        :param chunksize:int: Specify the number of rows in each batch to be written at a time.
+            By default, all rows will be written at once.
+        :param if_exists:str: {'fail', 'replace', 'append'}, default 'append'
+            How to behave if the table already exists.
+
+            * fail: Raise a ValueError.
+            * replace: Drop the table before inserting new values.
+            * append: Insert new values to the existing table.
+        :param index:bool: Write DataFrame index as a column. Uses `index_label` as the column
+            name in the table.
         """
 
-        try:
-            connector = self.authorization_pg()
-            df.to_sql(
-                name=pg_table_name,
-                schema=pg_table_schema,
-                con=connector,
-                chunksize=10024,
-                index=False,
-                if_exists='append'
-            )
-        except Exception as ex:
-            print(f"Can't insert df in {pg_table_name}")
-            raise ex
+        df.to_sql(
+            name=pg_table_name,
+            schema=pg_table_schema,
+            con=self.__authorization_pg__(),
+            chunksize=chunksize,
+            index=index,
+            if_exists=if_exists
+        )
 
     def execute_to_df(
             self,
-            sql_query: str = '',
+            sql_query: str = SQLQuery,
     ) -> Union[pd.DataFrame, Exception]:
         """
         Getting data from database with SQL-query.
@@ -83,17 +87,23 @@ class PostgreSQL:
         :return:pd.DataFrame: dataframe with data from database
         """
 
-        try:
-            return pd.read_sql(sql_query, self.authorization_pg())
-        except Exception as ex:
-            print(f"Can't execute df from PostgreSQL")
-            raise ex
+        return pd.read_sql(sql_query, self.__authorization_pg__())
 
     def execute_script(self,
-                       ddl_sql_script: SQLQuery):
+                       manual_sql_script: SQLQuery):
         """
+        Execute manual scripts (INSERT, TRUNCATE, DROP, CREATE, etc). Other than SELECT
 
+        :param manual_sql_script:SQLQuery: `str` query with manual script
         :return:
         """
-        self.authorization_pg().execute(ddl_sql_script)
+        self.__authorization_pg__().execute(manual_sql_script)
 
+    def get_uri(self) -> engine.base.Engine:
+        """
+        Get connector for manual manipulation with connect to database
+
+        :return engine.base.Engine:
+        """
+
+        return self.__authorization_pg__()

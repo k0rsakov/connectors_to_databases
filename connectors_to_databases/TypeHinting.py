@@ -1,9 +1,4 @@
 """
--
+Any SQL-script
 """
-SQLQuery = str
-
-"""
-
-"""
-SQLDDLQuery = str
+SQLQuery: str = ''
