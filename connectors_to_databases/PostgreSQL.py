@@ -1,3 +1,4 @@
+from urllib.parse import quote
 from typing import Union
 
 from sqlalchemy import create_engine, engine
@@ -36,10 +37,10 @@ class PostgreSQL:
         """
 
         engine_str = f'postgresql://' \
-                     f'{self.__login__}:{self.__password__}@{self.__host__}:{self.__port__}/{self.__database__}'
-        engine_connector = create_engine(engine_str)
+                     f'{self.__login__}:%s@{self.__host__}:{self.__port__}/' \
+                     f'{self.__database__}' % quote(self.__password__)
 
-        return engine_connector
+        return create_engine(engine_str)
 
     def into_pg_table(self,
                       df: pd.DataFrame = None,
@@ -73,7 +74,7 @@ class PostgreSQL:
             con=self.__authorization_pg__(),
             chunksize=chunksize,
             index=index,
-            if_exists=if_exists
+            if_exists=if_exists,
         )
 
     def execute_to_df(

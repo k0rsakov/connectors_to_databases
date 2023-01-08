@@ -7,7 +7,7 @@ from setuptools import setup
 :copyright: (c) 2022 k0rsakov
 """
 
-version = '0.0.4'
+version = '0.0.5'
 
 with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
@@ -31,7 +31,7 @@ setup(
     license='Apache License, Version 2.0, see LICENSE file',
 
     packages=['connectors_to_databases'],
-    install_requires=['SQLAlchemy', 'pandas', 'psycopg2'],
+    install_requires=['SQLAlchemy', 'pandas', 'psycopg2', 'clickhouse-sqlalchemy', 'wheel', 'clickhouse_driver'],
 
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
