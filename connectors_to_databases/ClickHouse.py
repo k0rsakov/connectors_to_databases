@@ -34,5 +34,5 @@ class ClickHouse(BaseOperator):
         """
 
         engine_str = f'clickhouse://{self._login}:{quote(self._password)}@{self._host}:{self._port}/default'
-        print(engine_str)
+
         return create_engine(engine_str)
