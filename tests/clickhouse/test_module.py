@@ -4,7 +4,11 @@ from connectors_to_databases.ClickHouse import ClickHouse
 
 
 def test_execute_script():
-    """"""
+    """
+    Checking the script for execution.
+
+    The test creates a table and checks if it has been created.
+    """
     ch = ClickHouse(
         login='click',
         password='click',
@@ -35,14 +39,16 @@ def test_execute_script():
 
     assert len(df) == 1
 
-def test_insert_pg_table():
-    """"""
+def test_insert_ch_table():
+    """
+    Checking the method for inserting data.
+    """
     ch = ClickHouse(
         login='click',
         password='click',
     )
 
-    d = {'value': [i for i in range(10000)]}
+    d = {'value': [i for i in range(10000000)]}
     df = pd.DataFrame(d)
     ch.insert_df(
         df=df,
@@ -52,11 +58,13 @@ def test_insert_pg_table():
 
     df = ch.execute_to_df('SELECT * FROM test')
 
-    assert len(df) == 10000
+    assert len(df) == 10000000
 
 
 def test_execute_df():
-    """"""
+    """
+    Checking the method for extracting data into a dataframe.
+    """
 
     ch = ClickHouse(
         login='click',
@@ -69,7 +77,9 @@ def test_execute_df():
     assert isinstance(df, pd.DataFrame)
 
 def test_get_uri():
-    """"""
+    """
+    Checking for getting a uri for use outside of class methods.
+    """
 
     ch = ClickHouse(
         login='click',
