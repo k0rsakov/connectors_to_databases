@@ -60,3 +60,11 @@ def test_execute_df():
     assert len(df) == 1
     assert isinstance(df, pd.DataFrame)
 
+def test_get_uri():
+    """"""
+
+    pg = PostgreSQL(
+        port=1
+    )
+
+    pg.get_uri().execute('DROP TABLE IF EXISTS test')
