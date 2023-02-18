@@ -6,73 +6,73 @@ from sqlalchemy import create_engine, engine
 import pandas as pd
 
 from .TypeHinting import SQLQuery
-# from TypeHinting import SQLQuery
+
 
 class BaseOperator:
     """
     BaseOperator for databases
     """
     def __init__(self,
-                 host: str = None,
+                 host: str = 'localhost',
                  port: int = None,
                  database: str = None,
                  login: str = None,
                  password: str = None,
                  ):
         """
-        :param host:str: Host/IP database; default 'None'.
-        :param database:str: name database; default 'None'.
-        :param port:int: port database; default 'None'.
-        :param login:str: login to database; default 'None'.
-        :param password:str: password to database; default 'None'.
+        :param host: Host/IP database; default 'localhost'.
+        :param database: name database; default 'None'.
+        :param port: port database; default 'None'.
+        :param login: login to database; default 'None'.
+        :param password: password to database; default 'None'.
         """
-        self.__host__ = host
-        self.__database__ = database
-        self.__login__ = login
-        self.__password__ = password
-        self.__port__ = port
+        self._host = host
+        self._database = database
+        self._login = login
+        self._password = password
+        self._port = port
 
-    def __authorization_pg__(self) -> engine.base.Engine:
+    def _authorization_pg(self) -> engine.base.Engine:
         """
         Creating connector engine to database PostgreSQL.
         """
 
         engine_str = f'base://' \
-                     f'{self.__login__}:%s@{self.__host__}:{self.__port__}/' \
-                     f'{self.__database__}' % quote(self.__password__)
+                     f'{self._login}:%s@{self._host}:{self._port}/' \
+                     f'{self._database}' % quote(self._password)
 
         return create_engine(engine_str)
 
-    def into_pg_table(self,
-                      df: pd.DataFrame = None,
-                      pg_table_name: str = None,
-                      pg_table_schema: str = None,
-                      chunksize: Union[int, None] = 10024,
-                      index: bool = False,
-                      if_exists: str = 'append',
-                      ) -> Union[None, Exception]:
+    def insert_df(self,
+                  df: pd.DataFrame = None,
+                  pg_table_name: str = None,
+                  pg_table_schema: str = None,
+                  chunksize: Union[int, None] = 10024,
+                  index: bool = False,
+                  if_exists: str = 'append',
+                  ) -> Union[None, Exception]:
         """
-        Inserting data from dataframe to database
+        Inserting data from dataframe to database.
 
-        :param df:pd.DataFrame: dataframe with data; default None.
-        :param pg_table_name:str: name of table; default None.
+        :param df: dataframe with data; default None.
+        :param pg_table_name: name of table; default None.
         :param pg_table_schema: name of schema; default None.
-        :param chunksize:int: Specify the number of rows in each batch to be written at a time.
+        :param chunksize: Specify the number of rows in each batch to be written at a time.
             By default, all rows will be written at once.
-        :param if_exists:str: {'fail', 'replace', 'append'}, default 'append'
+        :param if_exists: {'fail', 'replace', 'append'}, default 'append'
             How to behave if the table already exists.
 
             * fail: Raise a ValueError.
             * replace: Drop the table before inserting new values.
             * append: Insert new values to the existing table.
-        :param index:bool: Write DataFrame index as a column. Uses `index_label` as the column
+        :param index: Write DataFrame index as a column. Uses `index_label` as the column
             name in the table.
         """
 
         df.to_sql(
             name=pg_table_name,
             schema=pg_table_schema,
-            con=self.__authorization_pg__(),
+            con=self._authorization_pg(),
             chunksize=chunksize,
             index=index,
             if_exists=if_exists,
@@ -89,7 +89,7 @@ class BaseOperator:
         :return:pd.DataFrame: dataframe with data from database
         """
 
-        return pd.read_sql(sql_query, self.__authorization_pg__())
+        return pd.read_sql(sql_query, self._authorization_pg())
 
     def execute_script(self,
                        manual_sql_script: SQLQuery):
@@ -99,7 +99,7 @@ class BaseOperator:
         :param manual_sql_script:SQLQuery: `str` query with manual script
         :return:
         """
-        self.__authorization_pg__().execute(manual_sql_script)
+        self._authorization_pg().execute(manual_sql_script)
 
     def get_uri(self) -> engine.base.Engine:
         """
@@ -108,4 +108,4 @@ class BaseOperator:
         :return engine.base.Engine:
         """
 
-        return self.__authorization_pg__()
+        return self._authorization_pg()
