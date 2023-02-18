@@ -6,17 +6,28 @@ import pandas as pd
 
 from connectors_to_databases.postgre_base import PostgreSQL
 
-def test_execute_df():
-    """"""
 
+def test_execute_script():
+    """"""
     pg = PostgreSQL(
         port=1
     )
 
-    df = pg.execute_to_df('SELECT 1 AS one')
+    pg.execute_script('CREATE TABLE test(id bigserial PRIMARY KEY, value int8)')
+
+    df = pg.execute_to_df(
+        '''
+        SELECT
+            *
+        FROM
+            information_schema."tables" AS t
+        WHERE
+            table_schema = 'public'
+            AND table_name = 'test'
+        '''
+    )
 
     assert len(df) == 1
-    assert isinstance(df, pd.DataFrame)
 
 def test_insert_pg_table():
     """"""
@@ -26,30 +37,26 @@ def test_insert_pg_table():
 
     d = {'value': [i for i in range(10000)]}
     df = pd.DataFrame(d)
-    pg.into_pg_table(df=df, chunksize=None, pg_table_name='test')
+    pg.into_pg_table(
+        df=df,
+        chunksize=None,
+        pg_table_name='test'
+    )
 
     df = pg.execute_to_df('SELECT * FROM test')
 
     assert len(df) == 10000
 
-def test_execute_script():
+
+def test_execute_df():
     """"""
+
     pg = PostgreSQL(
         port=1
     )
 
-    pg.execute_script('CREATE TABLE test_script(id bigserial PRIMARY KEY, value int8)')
-
-    df = pg.execute_to_df(
-        '''
-        SELECT
-            *
-        FROM
-            information_schema."tables" t
-        WHERE
-            table_schema = 'public'
-            AND table_name = 'test_script'
-        '''
-    )
+    df = pg.execute_to_df('SELECT count(value) FROM test')
 
     assert len(df) == 1
+    assert isinstance(df, pd.DataFrame)
+
