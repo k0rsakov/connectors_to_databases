@@ -78,7 +78,7 @@ def test_execute_df():
 
 def test_get_uri():
     """
-    Checking for getting a uri for use outside of class methods.
+    Checking for getting a uri for use outside class methods.
     """
 
     ch = ClickHouse(
