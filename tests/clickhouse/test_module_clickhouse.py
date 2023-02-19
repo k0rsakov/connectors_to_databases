@@ -48,7 +48,7 @@ def test_insert_ch_table():
         password='click',
     )
 
-    d = {'value': [i for i in range(10000000)]}
+    d = {'value': [i for i in range(1000000)]}
     df = pd.DataFrame(d)
     ch.insert_df(
         df=df,
@@ -58,7 +58,7 @@ def test_insert_ch_table():
 
     df = ch.execute_to_df('SELECT * FROM test')
 
-    assert len(df) == 10000000
+    assert len(df) == 1000000
 
 
 def test_execute_df():

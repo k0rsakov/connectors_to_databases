@@ -7,7 +7,7 @@ from setuptools import setup
 :copyright: (c) 2022 k0rsakov
 """
 
-version = '0.0.5'
+version = '1.0.0'
 
 with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
@@ -20,7 +20,7 @@ setup(
     author_email='korsakov.iyu@gmail.com',
 
     description=(
-        u'Python module for connect with PostgreSQL '
+        u'Python module for connect with PostgreSQL and ClickHouse '
     ),
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -44,6 +44,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Programming Language :: Python :: Implementation :: CPython',
