@@ -55,7 +55,7 @@ pg.execute_script('CREATE TABLE simple_ (id int4)')
 # simple pd.DataFrame
 df = pd.DataFrame(data={'id':[1]})
 
-pg.into_pg_table(
+pg.insert_df(
     df=df,
     pg_table_name='simple_'
 )
@@ -129,7 +129,7 @@ ch.execute_script(
 # simple pd.DataFrame
 df = ch.DataFrame(data={'value':[1]})
 
-ch.into_pg_table(
+ch.insert_df(
     df=df,
     pg_table_name='test'
 )
