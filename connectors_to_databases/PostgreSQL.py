@@ -1,12 +1,13 @@
-from .BaseOperator import BaseOperator
-
+# from .BaseOperator import BaseOperator
+from connectors_to_databases.BaseOperator import BaseOperator
 from urllib.parse import quote
-from typing import Union
+from typing import Union, Iterable
 
 from sqlalchemy import create_engine, engine
 
 import pandas as pd
 
+#TODO: add generate on conflict
 class PostgreSQL(BaseOperator):
     """
     Connector to PostgreSQL database
@@ -33,7 +34,7 @@ class PostgreSQL(BaseOperator):
         self._password = password
         self._port = port
 
-    def _authorization_pg(self) -> engine.base.Engine:
+    def _authorization_database(self) -> engine.base.Engine:
         """
         Creating connector engine to database PostgreSQL.
         """
@@ -44,14 +45,15 @@ class PostgreSQL(BaseOperator):
 
         return create_engine(engine_str)
 
-    def insert_df(self,
-                      df: pd.DataFrame = None,
-                      pg_table_name: str = None,
-                      pg_table_schema: str = 'public',
-                      chunksize: Union[int, None] = 10024,
-                      index: bool = False,
-                      if_exists:str = 'append',
-                      ) -> Union[None, Exception]:
+    def insert_df(
+            self,
+            df: pd.DataFrame = None,
+            pg_table_name: str = None,
+            pg_table_schema: str = 'public',
+            chunksize: Union[int, None] = 10024,
+            index: bool = False,
+            if_exists:str = 'append',
+    ) -> Union[None, Exception]:
         """
         Inserting data from dataframe to database
 
@@ -73,8 +75,82 @@ class PostgreSQL(BaseOperator):
         df.to_sql(
             name=pg_table_name,
             schema=pg_table_schema,
-            con=self._authorization_pg(),
+            con=self._authorization_database(),
             chunksize=chunksize,
             index=index,
             if_exists=if_exists,
         )
+
+    @staticmethod
+    def list_columns_in_str_with_double_quotes(list_columns: list = None) -> str:
+        """
+        **Function: list_columns_in_str_with_double_quotes**
+
+        This static function takes a list of columns as the `list_columns` parameter and returns a string where each
+        column value is enclosed in double quotes.
+
+        **Parameters:**
+        - `list_columns` (list, optional): The list of columns to be enclosed in double quotes.
+        If not specified, defaults to `None`.
+
+        **Return:**
+        - `str`: A string containing column values enclosed in double quotes and separated by commas.
+
+        **Example Usage:**
+
+        ```python
+        columns = ['column1', 'column2', 'column3']
+        result = MyClass.list_columns_in_str_with_double_quotes(columns)
+        print(result)
+        ```
+
+        **Output:**
+
+        ```
+        "column1", "column2", "column3"
+        ```
+
+        In this example, we pass the `columns` list of columns to the `list_columns_in_str_with_double_quotes`
+        function and store the result in the `result` variable. Then, we print the value of `result`, which will
+        contain the strings from the `columns` list enclosed in double quotes and separated by commas.
+
+
+        @param list_columns: The list of columns to be enclosed in double quotes. If not specified, defaults
+            to `None`.; default 'None'
+        @return: A string containing column values enclosed in double quotes and separated by commas.
+        """
+
+        return ', '.join([f"\"{value}\"" for value in list_columns])
+
+    @classmethod
+    def generate_on_conflict_sql_query(
+            cls,
+            source_table_schema_name,
+            source_table_name,
+            target_table_schema_name,
+            target_table_name,
+            list_columns: Iterable,
+            pk: Union[str, list],
+            replace: bool = False,
+    ):
+        """"""
+
+        if isinstance(pk, list):
+            pk = cls.list_columns_in_str_with_double_quotes(list_columns=pk)
+        else:
+            pk = f'"{pk}"'
+        #TODO: check if replace is False or True
+
+        sql = f'''
+        INSERT INTO {target_table_schema_name}.{target_table_name} 
+        (
+            {cls.list_columns_in_str_with_double_quotes(list_columns=list_columns)}
+        )
+        SELECT 
+            {cls.list_columns_in_str_with_double_quotes(list_columns=list_columns)} 
+        FROM 
+            {source_table_schema_name}.{source_table_name}
+        ON CONFLICT ({pk})
+        '''
+
+        print(sql)
