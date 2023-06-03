@@ -114,3 +114,14 @@ class BaseOperator:
         """
 
         return self._authorization_database()
+
+    def check_connection_to_database(self) -> Union[bool, Exception]:
+        """
+        Method to check connection to database.
+
+        :return: boolean True, if connection to database is successful, Exception otherwise.
+        """
+        df = self.execute_to_df('SELECT 1 AS ONE')
+
+        if isinstance(df, pd.DataFrame):
+            return True
