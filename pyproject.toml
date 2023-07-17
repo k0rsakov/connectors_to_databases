@@ -47,3 +47,4 @@ target-version = "py311"
 # Custom
 show-fixes = true
 extend-select = ['C4', 'SIM', 'TCH', 'N', 'ICN', 'T20', 'RSE', 'RET', 'SLF', 'ARG', 'TID', 'PD', 'PERF']
+extend-exclude = ['PD901']
