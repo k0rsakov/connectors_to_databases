@@ -5,13 +5,7 @@ from typing import Union, Iterable
 
 from sqlalchemy import create_engine, engine
 
-# import pandas as pd
 
-# TODO: deprecated psycopg2, clickhouse-sqlalchemy
-# TODO: change setuptools (new version)
-# TODO: add linter
-# TODO: add new tests
-# TODO: custom insert with dtypes
 class PostgreSQL(BaseOperator):
     """
     Connector to PostgreSQL database
@@ -48,42 +42,6 @@ class PostgreSQL(BaseOperator):
                      f'{self._database}'
 
         return create_engine(engine_str)
-
-    # def insert_df(
-    #         self,
-    #         df: pd.DataFrame = None,
-    #         pg_table_name: str = None,
-    #         pg_table_schema: str = 'public',
-    #         chunksize: Union[int, None] = 10024,
-    #         index: bool = False,
-    #         if_exists:str = 'append',
-    # ) -> Union[None, Exception]:
-    #     """
-    #     Inserting data from dataframe to database
-    #
-    #     :param df: dataframe with data; default None.
-    #     :param pg_table_name: name of table; default None.
-    #     :param pg_table_schema: name of schema; default 'public'.
-    #     :param chunksize: Specify the number of rows in each batch to be written at a time.
-    #         By default, all rows will be written at once.
-    #     :param if_exists: {'fail', 'replace', 'append'}, default 'append'
-    #         How to behave if the table already exists.
-    #
-    #         * fail: Raise a ValueError.
-    #         * replace: Drop the table before inserting new values.
-    #         * append: Insert new values to the existing table.
-    #     :param index:bool: Write DataFrame index as a column. Uses `index_label` as the column
-    #         name in the table.
-    #     """
-    #
-    #     df.to_sql(
-    #         name=pg_table_name,
-    #         schema=pg_table_schema,
-    #         con=self._authorization_database(),
-    #         chunksize=chunksize,
-    #         index=index,
-    #         if_exists=if_exists,
-    #     )
 
     @staticmethod
     def list_columns_in_str_with_double_quotes(list_columns: list = None) -> str: # noqa: RUF013
