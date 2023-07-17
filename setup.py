@@ -2,7 +2,7 @@ from io import open
 from setuptools import setup
 
 
-version = '1.0.1'
+version = '1.1.0'
 
 with open('README.md', encoding='utf-8-sig') as f:
     long_description = f.read()
@@ -28,11 +28,12 @@ setup(
     # TODO: deprecated psycopg2, clickhouse-sqlalchemy
     packages=['connectors_to_databases'],
     install_requires=[
-        'SQLAlchemy',
-        'pandas',
-        'psycopg2',
-        'clickhouse-sqlalchemy',
-        'clickhouse_driver',
+        'SQLAlchemy==1.4.44',
+        'pandas==1.5.1',
+        'psycopg2-binary==2.9.6'
+        'psycopg2==2.9.5',
+        'clickhouse-sqlalchemy==0.2.3',
+        'clickhouse_driver==0.2.5',
         'ruff==0.0.278'
     ],
 
