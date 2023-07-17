@@ -1,15 +1,10 @@
 from io import open
 from setuptools import setup
 
-"""
-:authors: k0rsakov
-:license: Apache License, Version 2.0, see LICENSE file
-:copyright: (c) 2022 k0rsakov
-"""
 
-version = '1.0.0'
+version = '1.0.1'
 
-with open('README.md', encoding='utf-8') as f:
+with open('README.md', encoding='utf-8-sig') as f:
     long_description = f.read()
 
 setup(
@@ -29,14 +24,14 @@ setup(
     download_url='https://github.com/k0rsakov/connectors_to_databases/archive/refs/heads/main.zip',
 
     license='Apache License, Version 2.0, see LICENSE file',
-
+    
+    # TODO: deprecated psycopg2, clickhouse-sqlalchemy
     packages=['connectors_to_databases'],
     install_requires=[
         'SQLAlchemy',
         'pandas',
         'psycopg2',
         'clickhouse-sqlalchemy',
-        'wheel',
         'clickhouse_driver',
         'ruff==0.0.278'
     ],
@@ -48,13 +43,13 @@ setup(
         'Intended Audience :: Developers',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Programming Language :: Python :: Implementation :: CPython',
-    ]
+    ],
+    
+    python_requires='>=3.9',
+    keywords=['database', 'SQL', 'PostgreSQL', 'ClickHouse', 'dataframe'],
 )
