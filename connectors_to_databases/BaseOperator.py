@@ -124,5 +124,4 @@ class BaseOperator:
         """
         df = self.execute_to_df('SELECT 1 AS ONE')
 
-        if isinstance(df, pd.DataFrame):
-            return True
+        return bool(isinstance(df, pd.DataFrame))
