@@ -86,7 +86,7 @@ class PostgreSQL(BaseOperator):
     #     )
 
     @staticmethod
-    def list_columns_in_str_with_double_quotes(list_columns: list = None) -> str:
+    def list_columns_in_str_with_double_quotes(list_columns: list = None) -> str: # noqa: RUF013
         """
         **Function: list_columns_in_str_with_double_quotes**
 
@@ -130,10 +130,10 @@ class PostgreSQL(BaseOperator):
     def generate_on_conflict_sql_query(
             cls,
             source_table_schema_name: str = 'public',
-            source_table_name: str = None,
+            source_table_name: str = None, # noqa: RUF013
             target_table_schema_name: str = 'public',
-            target_table_name: str = None,
-            list_columns: Iterable[str] = None,
+            target_table_name: str = None, # noqa: RUF013
+            list_columns: Iterable[str] = None, # noqa: RUF013
             pk: Union[str, list] = 'id',
             replace: bool = False,
     ) -> str:
@@ -210,10 +210,7 @@ class PostgreSQL(BaseOperator):
         :return: The generated SQL query for data insertion with conflict handling.
         """
 
-        if isinstance(pk, list):
-            pk = cls.list_columns_in_str_with_double_quotes(list_columns=pk)
-        else:
-            pk = f'"{pk}"'
+        pk = cls.list_columns_in_str_with_double_quotes(list_columns=pk) if isinstance(pk, list) else f'"{pk}"'
 
         if replace:
             replace = f'''DO UPDATE SET {', '.join([f'"{i}" = EXCLUDED."{i}"' for i in list_columns])}'''
@@ -233,4 +230,4 @@ class PostgreSQL(BaseOperator):
         ON CONFLICT ({pk}) {replace}
         '''
 
-        return sql
+        return sql # noqa: RET504
