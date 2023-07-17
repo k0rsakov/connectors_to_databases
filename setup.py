@@ -31,7 +31,15 @@ setup(
     license='Apache License, Version 2.0, see LICENSE file',
 
     packages=['connectors_to_databases'],
-    install_requires=['SQLAlchemy', 'pandas', 'psycopg2', 'clickhouse-sqlalchemy', 'wheel', 'clickhouse_driver'],
+    install_requires=[
+        'SQLAlchemy',
+        'pandas',
+        'psycopg2',
+        'clickhouse-sqlalchemy',
+        'wheel',
+        'clickhouse_driver',
+        'ruff==0.0.278'
+    ],
 
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
