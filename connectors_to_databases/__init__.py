@@ -8,6 +8,6 @@
 # from .PostgreSQL import PostgreSQL
 # from .TypeHinting import SQLQuery
 
-__author__ = 'k0rsakov'
-__version__ = '1.0.0'
-__email__ = 'korsakov.iyu@gmail.com'
+# __author__ = 'k0rsakov'
+# __version__ = '1.0.0'
+# __email__ = 'korsakov.iyu@gmail.com'
