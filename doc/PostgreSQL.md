@@ -1,6 +1,6 @@
-## How to use class PostgreSQL
+# How to use class PostgreSQL
 
-### Creating instance of class
+## Creating instance of class
 
 You can create as many database connectors as you want.
 
@@ -18,19 +18,25 @@ pg_other = PostgreSQL(
 )
 ```
 
-### Check connection to database
+## Check connection to database
+
+You can check connection to database.
 
 ```python
 pg.check_connection()
 ```
 
-### Creating a table for examples
+## Creating a table for examples
+
+You can create table and execute any PostgreSQL query.
 
 ```python
 pg.execute_script('CREATE TABLE simple_ (id int4)')
 ```
 
-### Filling the table with data
+## Filling the table with data
+
+You can insert data from pandas dataframe in PostgreSQL table
 
 ```python
 # simple pd.DataFrame
@@ -42,7 +48,9 @@ pg.insert_df(
 )
 ```
 
-### Getting data from a table
+## Getting data from a table
+
+You can get data from PostgreSQL table in pandas dataframe.
 
 ```python
 pg.execute_to_df(
@@ -50,7 +58,7 @@ pg.execute_to_df(
 )
 ```
 
-### Getting a connector to the database.
+## Getting a connector to the database.
 
 It can be used as you need.
 
@@ -64,7 +72,9 @@ What does the connector look like
 Engine(postgresql://postgres:***@localhost:5432/postgres)
 ```
 
-### Delete our `simple_` table
+## Delete our `simple_` table
+
+You can drop any PostgreSQL table
 
 ```python
 pg.execute_script('DROP TABLE simple_')
