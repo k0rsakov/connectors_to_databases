@@ -5,9 +5,13 @@ from typing import Union, Iterable
 
 from sqlalchemy import create_engine, engine
 
-import pandas as pd
+# import pandas as pd
 
-
+# TODO: deprecated psycopg2, clickhouse-sqlalchemy
+# TODO: change setuptools (new version)
+# TODO: add linter
+# TODO: add new tests
+# TODO: custom insert with dtypes
 class PostgreSQL(BaseOperator):
     """
     Connector to PostgreSQL database
@@ -136,7 +140,8 @@ class PostgreSQL(BaseOperator):
         """
         **Function: generate_on_conflict_sql_query**
 
-        This class method generates an SQL query for performing data insertion with conflict handling using a specified primary key.
+        This class method generates an SQL query for performing data insertion with conflict handling using a
+        specified primary key.
 
         **Parameters:**
         - `source_table_schema_name` (str, optional): The schema name of the source table. Defaults to `'public'`.
@@ -213,7 +218,7 @@ class PostgreSQL(BaseOperator):
         if replace:
             replace = f'''DO UPDATE SET {', '.join([f'"{i}" = EXCLUDED."{i}"' for i in list_columns])}'''
         else:
-            replace = f'DO NOTHING'
+            replace = 'DO NOTHING'
 
 
         sql = f'''
