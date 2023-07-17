@@ -1,12 +1,15 @@
 # Connector to databases
 
 ![PyPI](https://img.shields.io/pypi/v/connectors-to-databases?color=blueviolet) 
-![Python 3, 3.10, 3.11](https://img.shields.io/pypi/pyversions/clubhouse?color=blueviolet)
-![License](https://img.shields.io/pypi/l/connectors-to-databases?color=blueviolet) 
+![Python](https://img.shields.io/pypi/pyversions/connectors-to-databases?color=blueviolet)
+![License](https://img.shields.io/pypi/l/connectors-to-databases?color=blueviolet)
 
-**Connector to databases** – easy package for connect with database 
-[PostgreSQL](https://github.com/postgres/postgres) and 
-[ClickHouse](https://github.com/ClickHouse/ClickHouse)
+![PG](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![PG](https://img.shields.io/badge/ClickHouse-white?style=for-the-badge&logo=clickhouse&logoColor=yellow)
+
+**Connector to databases** – easy package for connect with database:
+- [PostgreSQL](https://github.com/postgres/postgres)
+- [ClickHouse](https://github.com/ClickHouse/ClickHouse)
 
 ## Installation
 
@@ -23,152 +26,11 @@ Or from GitHub:
 pip install https://github.com/k0rsakov/connectors_to_databases/archive/refs/heads/main.zip
 ```
 
-## How to use class PostgreSQL
+## Usage
 
-### Creating instance of class
-
-You can create as many database connectors as you want.
-
-```python
-from connectors_to_databases import PostgreSQL
-
-pg = PostgreSQL()
-
-pg_other = PostgreSQL(
-    host='0.0.0.0',
-    port=0,
-    database='main',
-    login='admin',
-    password='admin',
-)
-```
-
-### Check connection to database
-
-```python
-pg.check_connection()
-```
-
-### Creating a table for examples
-
-```python
-pg.execute_script('CREATE TABLE simple_ (id int4)')
-```
-
-### Filling the table with data
-
-```python
-# simple pd.DataFrame
-df = pd.DataFrame(data={'id':[1]})
-
-pg.insert_df(
-    df=df,
-    pg_table_name='simple_'
-)
-```
-
-### Getting data from a table
-
-```python
-pg.execute_to_df(
-    '''select * from simple_'''
-)
-```
-
-### Getting a connector to the database.
-
-It can be used as you need.
-
-```python
-pg.get_uri()
-```
-
-What does the connector look like
-
-```log
-Engine(postgresql://postgres:***@localhost:5432/postgres)
-```
-
-### Delete our `simple_` table
-
-```python
-pg.execute_script('DROP TABLE simple_')
-```
-
-## How to use class ClickHouse
-
-### Creating instance of class
-
-You can create as many database connectors as you want.
-
-```python
-from connectors_to_databases import ClickHouse
-
-ch = ClickHouse()
-
-ch_other = ClickHouse(
-    host='0.0.0.0',
-    port=0,
-    login='admin',
-    password='admin',
-)
-```
-
-### Creating a table for examples
-
-```python
-ch.execute_script(
-    '''
-    CREATE TABLE test 
-    (
-        value Int64
-    ) 
-    ENGINE = MergeTree 
-    ORDER BY value
-    '''
-)
-```
-
-### Filling the table with data
-
-```python
-# simple pd.DataFrame
-df = ch.DataFrame(data={'value':[1]})
-
-ch.insert_df(
-    df=df,
-    pg_table_name='test'
-)
-```
-
-### Getting data from a table
-
-```python
-ch.execute_to_df(
-    '''select * from test'''
-)
-```
-
-### Getting a connector to the database.
-
-It can be used as you need.
-
-```python
-ch.get_uri()
-```
-
-What does the connector look like
-
-```log
-Engine(clickhouse://click:***@localhost:8123/default)
-```
-
-### Delete our `simple_` table
-
-```python
-ch.execute_script('DROP TABLE test')
-```
-
+How to use connections:
+- [ClickHouse.md](doc/ClickHouse.md)
+- [PostgreSQL.md](doc/PostgreSQL.md)
 
 ## Contributing
 
