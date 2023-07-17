@@ -1,8 +1,11 @@
 # Connector to databases
 
 ![PyPI](https://img.shields.io/pypi/v/connectors-to-databases?color=blueviolet) 
-![Python 3, 3.10, 3.11](https://img.shields.io/pypi/pyversions/clubhouse?color=blueviolet)
-![License](https://img.shields.io/pypi/l/connectors-to-databases?color=blueviolet) 
+![Python](https://img.shields.io/pypi/pyversions/connectors-to-databases?color=blueviolet)
+![License](https://img.shields.io/pypi/l/connectors-to-databases?color=blueviolet)
+
+![PG](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![PG](https://img.shields.io/badge/ClickHouse-white?style=for-the-badge&logo=clickhouse&logoColor=yellow)
 
 **Connector to databases** – easy package for connect with database:
 - [PostgreSQL](https://github.com/postgres/postgres)
