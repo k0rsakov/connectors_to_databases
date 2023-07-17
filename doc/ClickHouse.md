@@ -1,8 +1,6 @@
+# How to use class ClickHouse
 
-
-## How to use class ClickHouse
-
-### Creating instance of class
+## Creating instance of class
 
 You can create as many database connectors as you want.
 
@@ -19,7 +17,17 @@ ch_other = ClickHouse(
 )
 ```
 
-### Creating a table for examples
+## Check connection to database
+
+You can check connection to database.
+
+```python
+ch.check_connection()
+```
+
+## Creating a table for examples
+
+You can create table and execute any ClickHouse query.
 
 ```python
 ch.execute_script(
@@ -34,7 +42,9 @@ ch.execute_script(
 )
 ```
 
-### Filling the table with data
+## Filling the table with data
+
+You can insert data from pandas dataframe in ClickHouse table
 
 ```python
 # simple pd.DataFrame
@@ -46,7 +56,9 @@ ch.insert_df(
 )
 ```
 
-### Getting data from a table
+## Getting data from a table
+
+You can get data from ClickHouse table in pandas dataframe.
 
 ```python
 ch.execute_to_df(
@@ -54,7 +66,7 @@ ch.execute_to_df(
 )
 ```
 
-### Getting a connector to the database.
+## Getting a connector to the database.
 
 It can be used as you need.
 
@@ -68,7 +80,9 @@ What does the connector look like
 Engine(clickhouse://click:***@localhost:8123/default)
 ```
 
-### Delete our `simple_` table
+## Delete our `simple_` table
+
+You can drop any ClickHouse table
 
 ```python
 ch.execute_script('DROP TABLE test')
