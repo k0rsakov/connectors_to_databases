@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  ch_server:
+    image: clickhouse/clickhouse-server
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./db:/var/lib/clickhouse
+    networks:
+        - ch_ntw
+    environment:
+      CLICKHOUSE_USER: click
+      CLICKHOUSE_PASSWORD: click
+
+  ch_client:
+    image: clickhouse/clickhouse-client
+    entrypoint:
+      - /bin/sleep
+    command:
+      - infinity
+    networks:
+        - ch_ntw
+
+  pg_server:
+    image: postgres
+    ports:
+      - "1:5432"
+    networks:
+        - ch_ntw
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+networks:
+  ch_ntw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.222.1.0/24
