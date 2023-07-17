@@ -42,4 +42,8 @@ line-length = 120
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 # Assume Python 3.10.
-target-version = "py310"
+target-version = "py311"
+
+# Custom
+show-fixes = true
+extend-select = ['C4', 'SIM', 'TCH', 'N', 'ICN', 'T20', 'RSE', 'RET', 'SLF', 'ARG', 'TID', 'PD', 'PERF']
