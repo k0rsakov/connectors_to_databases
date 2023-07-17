@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, engine
 
 from .BaseOperator import BaseOperator
 
+# TODO: Change sqlalchemy to clickhouse-driver
 
 class ClickHouse(BaseOperator):
     """
@@ -28,7 +29,7 @@ class ClickHouse(BaseOperator):
         self._password = password
         self._port = port
 
-    def _authorization_pg(self) -> engine.base.Engine:
+    def _authorization_database(self) -> engine.base.Engine:
         """
         Creating connector engine to database ClickHouse.
         """
