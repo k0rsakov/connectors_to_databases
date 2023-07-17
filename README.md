@@ -1,7 +1,7 @@
 # Connector to databases
 
 ![PyPI](https://img.shields.io/pypi/v/connectors-to-databases?color=blueviolet) 
-![Python 3.6, 3.7, 3.8, 3.9, 3.10, 3.11](https://img.shields.io/pypi/pyversions/clubhouse?color=blueviolet)
+![Python 3, 3.10, 3.11](https://img.shields.io/pypi/pyversions/clubhouse?color=blueviolet)
 ![License](https://img.shields.io/pypi/l/connectors-to-databases?color=blueviolet) 
 
 **Connector to databases** – easy package for connect with database 
@@ -41,6 +41,12 @@ pg_other = PostgreSQL(
     login='admin',
     password='admin',
 )
+```
+
+### Check connection to database
+
+```python
+pg.check_connection()
 ```
 
 ### Creating a table for examples

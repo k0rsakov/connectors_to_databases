@@ -22,13 +22,15 @@ services:
     networks:
         - ch_ntw
 
-  postgres_db:
-    image: postgres:latest
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+  pg_server:
+    image: postgres
     ports:
       - "1:5432"
+    networks:
+        - ch_ntw
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
 
 networks:
   ch_ntw:
