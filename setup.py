@@ -30,8 +30,8 @@ setup(
     install_requires=[
         'SQLAlchemy==1.4.44',
         'pandas==1.5.1',
-        'psycopg2-binary==2.9.6',
-        'psycopg2==2.9.5',
+        'psycopg2-binary==2.9.5',
+        # 'psycopg2==2.9.5',
         'clickhouse-sqlalchemy==0.2.3',
         'clickhouse_driver==0.2.5',
         'ruff==0.0.278',
