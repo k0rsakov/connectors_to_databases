@@ -1,7 +1,7 @@
 # from .BaseOperator import BaseOperator
 from connectors_to_databases.BaseOperator import BaseOperator
 from urllib.parse import quote
-from typing import Union, Iterable
+from typing import Iterable
 
 from sqlalchemy import create_engine, engine
 
@@ -92,7 +92,7 @@ class PostgreSQL(BaseOperator):
             target_table_schema_name: str = 'public',
             target_table_name: str = None, # noqa: RUF013
             list_columns: Iterable[str] = None, # noqa: RUF013
-            pk: Union[str, list] = 'id',
+            pk: str | list[str, ...] = 'id',
             replace: bool = False,
     ) -> str:
         """
@@ -109,7 +109,7 @@ class PostgreSQL(BaseOperator):
         - `target_table_name` (str): The name of the target table where data will be inserted.
         - `list_columns` (Iterable[str], optional): An iterable object containing the names of columns to be inserted.
             If not specified, all columns from the source table will be inserted.
-        - `pk` (Union[str, list]): The primary key for checking insertion conflicts. It can be a string representing
+        - `pk` (str | list[str, ...]): The primary key for checking insertion conflicts. It can be a string representing
             a single column name or a list of column names.
         - `replace` (bool): A flag indicating whether to replace existing data in case of conflicts. Defaults to
             `False`, which means conflicts will be ignored and nothing will be done.
