@@ -1,4 +1,6 @@
 # from .BaseOperator import BaseOperator
+import pandas as pd
+
 from connectors_to_databases.BaseOperator import BaseOperator
 from urllib.parse import quote
 from typing import Iterable
@@ -189,3 +191,73 @@ class PostgreSQL(BaseOperator):
         '''
 
         return sql # noqa: RET504
+
+    def get_database_description(
+            self,
+
+    ) -> pd.DataFrame:
+        """
+        
+        :return: 
+        """
+        
+        # TODO: add where schema (str | list)
+        # TODO: add where table (str | list)
+        # TODO: intersection schema and table, if schema -> ..., if table -> ..., if table and schema -> ...
+        
+        
+        sql_query = '''
+        SELECT
+            all_columns.table_schema,
+            schema_info.schema_description,
+            all_columns.table_name,
+            table_info.table_description AS table_description,
+            all_columns.column_name,
+            all_columns.data_type,
+            columns_info.description AS column_description
+        FROM
+            information_schema.columns AS all_columns
+        LEFT JOIN (
+            SELECT
+                *
+            FROM
+                pg_catalog.pg_statio_all_tables AS st
+            LEFT JOIN pg_catalog.pg_description pgd 
+                ON pgd.objoid = st.relid
+            LEFT JOIN information_schema.columns AS c
+                ON pgd.objsubid = c.ordinal_position
+                AND c.table_schema = st.schemaname
+                AND c.table_name = st.relname 
+            ) AS columns_info
+                ON all_columns.table_schema = columns_info.schemaname
+                AND all_columns.table_name = columns_info.relname
+                AND columns_info.column_name = all_columns.column_name
+        LEFT JOIN (
+            SELECT
+                *,
+                pg_catalog.obj_description(pgc.oid, 'pg_class') AS table_description
+            FROM
+                information_schema.tables AS t
+            INNER JOIN pg_catalog.pg_class AS pgc 
+                ON t.table_name = pgc.relname
+            WHERE
+                t.table_type = 'BASE TABLE'
+                AND pg_catalog.obj_description(pgc.oid, 'pg_class') IS NOT NULL
+            ) AS table_info
+                ON	
+                    table_info.table_name = all_columns.table_name
+                    AND table_info.table_schema = all_columns.table_schema
+        INNER JOIN (
+            SELECT
+                nspname,
+                obj_description(oid) AS schema_description
+            FROM
+                pg_catalog.pg_namespace 
+            ) AS schema_info 
+                ON schema_info.nspname = all_columns.table_schema
+        WHERE
+            all_columns.table_schema != 'pg_catalog';
+	    '''
+        
+        return self.execute_to_df(sql_query=sql_query)
+        
