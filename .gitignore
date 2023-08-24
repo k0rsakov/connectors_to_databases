@@ -129,3 +129,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/connectors_to_databases/class_use.py
