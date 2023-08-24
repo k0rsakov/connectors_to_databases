@@ -51,23 +51,50 @@ class BaseOperator:
             chunksize: Union[int, None] = 10024,
             index: bool = False,
             if_exists: str = 'append',
+            dtype: Union[None, dict] = None,
     ) -> Union[None, Exception]:
         """
         Inserting data from dataframe to database.
-
+         
         :param df: dataframe with data; default None.
         :param table_name: name of table; default None.
         :param table_schema: name of schema; default None.
         :param chunksize: Specify the number of rows in each batch to be written at a time.
             By default, all rows will be written at once; default `10024`.
+        :param index: Write DataFrame index as a column. Uses `index_label` as the column
+            name in the table.
         :param if_exists: {'fail', 'replace', 'append'}, default 'append'
             How to behave if the table already exists.
 
             * fail: Raise a ValueError.
             * replace: Drop the table before inserting new values.
             * append: Insert new values to the existing table.
-        :param index: Write DataFrame index as a column. Uses `index_label` as the column
-            name in the table.
+        :param dtype: Specifying the datatype for columns. If a dictionary is used, the
+            keys should be the column names and the values should be the
+            SQLAlchemy types or strings for the sqlite3 legacy mode. If a
+            scalar is provided, it will be applied to all columns.
+            
+            Example:
+            
+            Create df
+            >>> from connectors_to_databases import PostgreSQL
+            >>> import sqlalchemy
+            >>> from sqlalchemy.dialects.postgresql import UUID
+            
+            >>> pg = PostgreSQL()
+            >>> dict_ = {'id': '41e5091e-6e97-4670-a4c9-7d6d4cc7c2af', 'date': '2020-01-01', 'amount': 100}
+            >>> df = pd.DataFrame([dict_])
+            >>> pg.insert_df(
+            ...    df=df, 
+            ...    table_name='tmp_fct_sales', 
+            ...    table_schema='public',
+            ...    dtype={
+            ...        'id': UUID,
+            ...        'date': sqlalchemy.Date
+            ...    }
+            ... )
+
+            
         """
 
         df.to_sql(
@@ -77,6 +104,7 @@ class BaseOperator:
             chunksize=chunksize,
             index=index,
             if_exists=if_exists,
+            dtype=dtype
         )
 
     def execute_to_df(
