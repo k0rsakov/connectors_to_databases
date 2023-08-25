@@ -161,25 +161,25 @@ class PostgreSQL(BaseOperator):
 
         This method retrieves descriptive information about tables, columns, and their descriptions within a
         PostgreSQL database schema.
-
+        
         **Parameters:**
-        - `table_name` (str | list[str, ...]): The name of the table or list of tables. If provided, the function
+        - `table_name` (str | list[str, ...]): The name of the table or list of tables. If provided, the function 
         will filter results to include only the specified table(s). Default is `None`.
-        - `table_schema` (str | list[str, ...]): The schema name of the table or list of tables. If provided, the
+        - `table_schema` (str | list[str, ...]): The schema name of the table or list of tables. If provided, the 
         function will filter results to include only the specified schema(s). Default is `None`.
-
+        
         **Return:**
         - `pd.DataFrame`: A pandas DataFrame containing descriptive information about the tables and columns.
-
+        
         **Example Usage:**
-
+        
         ```python
         # Instantiate an object of the class
         pg = PostgreSQL()
-
+        
         # Retrieve description for a specific table
         table_description = pg.get_database_description(table_name="employees")
-
+        
         # Retrieve description for tables in a schema
         schema_description = pg.get_database_description(table_schema="public")
 
