@@ -1,12 +1,12 @@
-# from .BaseOperator import BaseOperator
-import pandas as pd
-
-from connectors_to_databases.BaseOperator import BaseOperator
-from urllib.parse import quote
 from typing import Iterable
 
+from urllib.parse import quote
+import pandas as pd
 from sqlalchemy import create_engine, engine
 
+from connectors_to_databases.BaseOperator import BaseOperator
+
+from helper_functions.function_list import list_values_in_str_with_double_quotes
 
 class PostgreSQL(BaseOperator):
     """
@@ -44,47 +44,6 @@ class PostgreSQL(BaseOperator):
                      f'{self._database}'
 
         return create_engine(engine_str)
-
-    @staticmethod
-    def list_columns_in_str_with_double_quotes(list_columns: list = None) -> str: # noqa: RUF013
-        """
-        **Function: list_columns_in_str_with_double_quotes**
-
-        This static function takes a list of columns as the `list_columns` parameter and returns a string where each
-        column value is enclosed in double quotes.
-
-        **Parameters:**
-        - `list_columns` (list, optional): The list of columns to be enclosed in double quotes.
-        If not specified, defaults to `None`.
-
-        **Return:**
-        - `str`: A string containing column values enclosed in double quotes and separated by commas.
-
-        **Example Usage:**
-
-        ```python
-        columns = ['column1', 'column2', 'column3']
-        result = MyClass.list_columns_in_str_with_double_quotes(columns)
-        print(result)
-        ```
-
-        **Output:**
-
-        ```
-        "column1", "column2", "column3"
-        ```
-
-        In this example, we pass the `columns` list of columns to the `list_columns_in_str_with_double_quotes`
-        function and store the result in the `result` variable. Then, we print the value of `result`, which will
-        contain the strings from the `columns` list enclosed in double quotes and separated by commas.
-
-
-        @param list_columns: The list of columns to be enclosed in double quotes. If not specified, defaults
-            to `None`.; default 'None'
-        @return: A string containing column values enclosed in double quotes and separated by commas.
-        """
-
-        return ', '.join([f"\"{value}\"" for value in list_columns])
 
     @classmethod
     def generate_on_conflict_sql_query(
@@ -170,7 +129,7 @@ class PostgreSQL(BaseOperator):
         :return: The generated SQL query for data insertion with conflict handling.
         """
 
-        pk = cls.list_columns_in_str_with_double_quotes(list_columns=pk) if isinstance(pk, list) else f'"{pk}"'
+        pk = list_values_in_str_with_double_quotes(list_columns=pk) if isinstance(pk, list) else f'"{pk}"'
 
         if replace:
             replace = f'''DO UPDATE SET {', '.join([f'"{i}" = EXCLUDED."{i}"' for i in list_columns])}'''
@@ -181,10 +140,10 @@ class PostgreSQL(BaseOperator):
         sql = f'''
         INSERT INTO {target_table_schema_name}.{target_table_name} 
         (
-            {cls.list_columns_in_str_with_double_quotes(list_columns=list_columns)}
+            {list_values_in_str_with_double_quotes(list_columns=list_columns)}
         )
         SELECT 
-            {cls.list_columns_in_str_with_double_quotes(list_columns=list_columns)} 
+            {list_values_in_str_with_double_quotes(list_columns=list_columns)} 
         FROM 
             {source_table_schema_name}.{source_table_name}
         ON CONFLICT ({pk}) {replace}
@@ -192,21 +151,39 @@ class PostgreSQL(BaseOperator):
 
         return sql # noqa: RET504
 
+    # @classmethod
+    # @staticmethod
     def get_database_description(
             self,
-
+            table_name: str = None,
+            table_schema: str = None,
     ) -> pd.DataFrame:
-        """
-        
-        :return: 
-        """
+        """"""
         
         # TODO: add where schema (str | list)
         # TODO: add where table (str | list)
         # TODO: intersection schema and table, if schema -> ..., if table -> ..., if table and schema -> ...
+        # TODO: add `AND` condition
         
-        
-        sql_query = '''
+        where_condition = ''
+
+        if table_name:
+            if table_name and not isinstance(table_name, list):
+                where_condition += f'''AND all_columns.table_name='{table_name}'\n'''
+            else:
+                where_condition += f'''AND all_columns.table_name IN ({self.list_values_in_str_with_double_quotes(
+                    list_columns=table_name
+                )})\n'''
+                
+        if table_schema:
+            if table_schema and not isinstance(table_schema, list):
+                where_condition += f'''AND all_columns.table_schema='{table_schema}'\n'''
+            else:
+                where_condition += f'''AND all_columns.table_schema IN ({self.list_values_in_str_with_double_quotes(
+                    list_columns=table_schema
+                )})\n'''
+            
+        sql_query = f'''
         SELECT
             all_columns.table_schema,
             schema_info.schema_description,
@@ -256,7 +233,8 @@ class PostgreSQL(BaseOperator):
             ) AS schema_info 
                 ON schema_info.nspname = all_columns.table_schema
         WHERE
-            all_columns.table_schema != 'pg_catalog';
+            all_columns.table_schema != 'pg_catalog'
+            {where_condition}
 	    '''
         
         return self.execute_to_df(sql_query=sql_query)
