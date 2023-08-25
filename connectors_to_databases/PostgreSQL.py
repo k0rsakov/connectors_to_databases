@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, engine
 
 from connectors_to_databases.BaseOperator import BaseOperator
 
-from helper_functions.function_list import list_values_in_str_with_double_quotes
+from helper_functions.function_list import list_values_in_str_with_double_quotes, list_values_in_str_with_single_quotes
 
 class PostgreSQL(BaseOperator):
     """
@@ -151,8 +151,6 @@ class PostgreSQL(BaseOperator):
 
         return sql # noqa: RET504
 
-    # @classmethod
-    # @staticmethod
     def get_database_description(
             self,
             table_name: str = None,
@@ -160,18 +158,13 @@ class PostgreSQL(BaseOperator):
     ) -> pd.DataFrame:
         """"""
         
-        # TODO: add where schema (str | list)
-        # TODO: add where table (str | list)
-        # TODO: intersection schema and table, if schema -> ..., if table -> ..., if table and schema -> ...
-        # TODO: add `AND` condition
-        
         where_condition = ''
 
         if table_name:
             if table_name and not isinstance(table_name, list):
                 where_condition += f'''AND all_columns.table_name='{table_name}'\n'''
             else:
-                where_condition += f'''AND all_columns.table_name IN ({self.list_values_in_str_with_double_quotes(
+                where_condition += f'''AND all_columns.table_name IN ({list_values_in_str_with_single_quotes(
                     list_columns=table_name
                 )})\n'''
                 
@@ -179,7 +172,7 @@ class PostgreSQL(BaseOperator):
             if table_schema and not isinstance(table_schema, list):
                 where_condition += f'''AND all_columns.table_schema='{table_schema}'\n'''
             else:
-                where_condition += f'''AND all_columns.table_schema IN ({self.list_values_in_str_with_double_quotes(
+                where_condition += f'''AND all_columns.table_schema IN ({list_values_in_str_with_single_quotes(
                     list_columns=table_schema
                 )})\n'''
             
@@ -236,6 +229,6 @@ class PostgreSQL(BaseOperator):
             all_columns.table_schema != 'pg_catalog'
             {where_condition}
 	    '''
-        
+
         return self.execute_to_df(sql_query=sql_query)
         
