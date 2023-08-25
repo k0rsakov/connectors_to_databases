@@ -1,10 +1,12 @@
-# from .BaseOperator import BaseOperator
-from connectors_to_databases.BaseOperator import BaseOperator
-from urllib.parse import quote
 from typing import Iterable
 
+from urllib.parse import quote
+import pandas as pd
 from sqlalchemy import create_engine, engine
 
+from connectors_to_databases.BaseOperator import BaseOperator
+
+from helper_functions.function_list import list_values_in_str_with_double_quotes, list_values_in_str_with_single_quotes
 
 class PostgreSQL(BaseOperator):
     """
@@ -42,47 +44,6 @@ class PostgreSQL(BaseOperator):
                      f'{self._database}'
 
         return create_engine(engine_str)
-
-    @staticmethod
-    def list_columns_in_str_with_double_quotes(list_columns: list = None) -> str: # noqa: RUF013
-        """
-        **Function: list_columns_in_str_with_double_quotes**
-
-        This static function takes a list of columns as the `list_columns` parameter and returns a string where each
-        column value is enclosed in double quotes.
-
-        **Parameters:**
-        - `list_columns` (list, optional): The list of columns to be enclosed in double quotes.
-        If not specified, defaults to `None`.
-
-        **Return:**
-        - `str`: A string containing column values enclosed in double quotes and separated by commas.
-
-        **Example Usage:**
-
-        ```python
-        columns = ['column1', 'column2', 'column3']
-        result = MyClass.list_columns_in_str_with_double_quotes(columns)
-        print(result)
-        ```
-
-        **Output:**
-
-        ```
-        "column1", "column2", "column3"
-        ```
-
-        In this example, we pass the `columns` list of columns to the `list_columns_in_str_with_double_quotes`
-        function and store the result in the `result` variable. Then, we print the value of `result`, which will
-        contain the strings from the `columns` list enclosed in double quotes and separated by commas.
-
-
-        @param list_columns: The list of columns to be enclosed in double quotes. If not specified, defaults
-            to `None`.; default 'None'
-        @return: A string containing column values enclosed in double quotes and separated by commas.
-        """
-
-        return ', '.join([f"\"{value}\"" for value in list_columns])
 
     @classmethod
     def generate_on_conflict_sql_query(
@@ -168,7 +129,7 @@ class PostgreSQL(BaseOperator):
         :return: The generated SQL query for data insertion with conflict handling.
         """
 
-        pk = cls.list_columns_in_str_with_double_quotes(list_columns=pk) if isinstance(pk, list) else f'"{pk}"'
+        pk = list_values_in_str_with_double_quotes(list_columns=pk) if isinstance(pk, list) else f'"{pk}"'
 
         if replace:
             replace = f'''DO UPDATE SET {', '.join([f'"{i}" = EXCLUDED."{i}"' for i in list_columns])}'''
@@ -179,13 +140,125 @@ class PostgreSQL(BaseOperator):
         sql = f'''
         INSERT INTO {target_table_schema_name}.{target_table_name} 
         (
-            {cls.list_columns_in_str_with_double_quotes(list_columns=list_columns)}
+            {list_values_in_str_with_double_quotes(list_columns=list_columns)}
         )
         SELECT 
-            {cls.list_columns_in_str_with_double_quotes(list_columns=list_columns)} 
+            {list_values_in_str_with_double_quotes(list_columns=list_columns)} 
         FROM 
             {source_table_schema_name}.{source_table_name}
         ON CONFLICT ({pk}) {replace}
         '''
 
         return sql # noqa: RET504
+
+    def get_database_description(
+            self,
+            table_name: str | list[str, ...] = None,
+            table_schema: str | list[str, ...] = None,
+    ) -> pd.DataFrame:
+        """
+        **Function: get_database_description**
+
+        This method retrieves descriptive information about tables, columns, and their descriptions within a
+        PostgreSQL database schema.
+        
+        **Parameters:**
+        - `table_name` (str | list[str, ...]): The name of the table or list of tables. If provided, the function 
+        will filter results to include only the specified table(s). Default is `None`.
+        - `table_schema` (str | list[str, ...]): The schema name of the table or list of tables. If provided, the 
+        function will filter results to include only the specified schema(s). Default is `None`.
+        
+        **Return:**
+        - `pd.DataFrame`: A pandas DataFrame containing descriptive information about the tables and columns.
+        
+        **Example Usage:**
+        
+        ```python
+        # Instantiate an object of the class
+        pg = PostgreSQL()
+        
+        # Retrieve description for a specific table
+        table_description = pg.get_database_description(table_name="employees")
+        
+        # Retrieve description for tables in a schema
+        schema_description = pg.get_database_description(table_schema="public")
+
+        :param table_name: The table name.
+        :param table_schema: The table schema.
+        :return: pd.DataFrame with descriptive information about the tables and columns.
+        """
+        
+        where_condition = ''
+
+        if table_name:
+            if table_name and not isinstance(table_name, list):
+                where_condition += f'''AND all_columns.table_name='{table_name}'\n'''
+            else:
+                where_condition += f'''AND all_columns.table_name IN ({list_values_in_str_with_single_quotes(
+                    list_columns=table_name
+                )})\n'''
+                
+        if table_schema:
+            if table_schema and not isinstance(table_schema, list):
+                where_condition += f'''AND all_columns.table_schema='{table_schema}'\n'''
+            else:
+                where_condition += f'''AND all_columns.table_schema IN ({list_values_in_str_with_single_quotes(
+                    list_columns=table_schema
+                )})\n'''
+            
+        sql_query = f'''
+        SELECT
+            all_columns.table_schema,
+            schema_info.schema_description,
+            all_columns.table_name,
+            table_info.table_description AS table_description,
+            all_columns.column_name,
+            all_columns.data_type,
+            columns_info.description AS column_description
+        FROM
+            information_schema.columns AS all_columns
+        LEFT JOIN (
+            SELECT
+                *
+            FROM
+                pg_catalog.pg_statio_all_tables AS st
+            LEFT JOIN pg_catalog.pg_description pgd 
+                ON pgd.objoid = st.relid
+            LEFT JOIN information_schema.columns AS c
+                ON pgd.objsubid = c.ordinal_position
+                AND c.table_schema = st.schemaname
+                AND c.table_name = st.relname 
+            ) AS columns_info
+                ON all_columns.table_schema = columns_info.schemaname
+                AND all_columns.table_name = columns_info.relname
+                AND columns_info.column_name = all_columns.column_name
+        LEFT JOIN (
+            SELECT
+                *,
+                pg_catalog.obj_description(pgc.oid, 'pg_class') AS table_description
+            FROM
+                information_schema.tables AS t
+            INNER JOIN pg_catalog.pg_class AS pgc 
+                ON t.table_name = pgc.relname
+            WHERE
+                t.table_type = 'BASE TABLE'
+                AND pg_catalog.obj_description(pgc.oid, 'pg_class') IS NOT NULL
+            ) AS table_info
+                ON	
+                    table_info.table_name = all_columns.table_name
+                    AND table_info.table_schema = all_columns.table_schema
+        INNER JOIN (
+            SELECT
+                nspname,
+                obj_description(oid) AS schema_description
+            FROM
+                pg_catalog.pg_namespace 
+            ) AS schema_info 
+                ON schema_info.nspname = all_columns.table_schema
+        WHERE
+            all_columns.table_schema != 'pg_catalog'
+            {where_condition}
+	    '''
+
+        return self.execute_to_df(sql_query=sql_query)
+        
