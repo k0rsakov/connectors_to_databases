@@ -39,7 +39,7 @@ services:
     networks:
         - ch_ntw
     environment:
-      MARIADB_ROOT_PASSWORD: maria
+      MARIADB_ROOT_PASSWORD: root
 
 networks:
   ch_ntw:
