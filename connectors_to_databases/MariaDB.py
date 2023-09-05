@@ -7,7 +7,7 @@ from connectors_to_databases.BaseOperator import BaseOperator
 class MariaDB(BaseOperator):
     def __init__(
             self,
-            host: str = 'localhost',
+            host: str = '127.0.0.1',
             port: int = 3306,
             database: str = 'sys',
             login: str = 'root',
