@@ -16,7 +16,7 @@ def test_execute_script():
 
     m.execute_script('CREATE TABLE test(id bigserial PRIMARY KEY, value int8)')
 
-    df = m.execute_to_df(
+    df = m.execute_to_df(  # noqa: PD901
         '''
         SELECT
             *
@@ -40,14 +40,14 @@ def test_insert_m_table():
     )
 
     d = {'value': list(range(10000))}
-    df = pd.DataFrame(d)
+    df = pd.DataFrame(d) # noqa: PD901
     m.insert_df(
         df=df,
         chunksize=None,
         table_name='test'
     )
 
-    df = m.execute_to_df('SELECT * FROM test')
+    df = m.execute_to_df('SELECT * FROM test') # noqa: PD901
 
     assert len(df) == 10000
 
@@ -62,7 +62,7 @@ def test_execute_df():
         port=2,
     )
 
-    df = m.execute_to_df('SELECT count(value) FROM test')
+    df = m.execute_to_df('SELECT count(value) FROM test') # noqa: PD901
 
     assert len(df) == 1
     assert isinstance(df, pd.DataFrame)
