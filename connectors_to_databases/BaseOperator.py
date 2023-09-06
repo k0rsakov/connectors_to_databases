@@ -6,9 +6,9 @@ from sqlalchemy import create_engine, engine
 import pandas as pd
 
 from .TypeHinting import SQLQuery
+from abc import ABC, abstractmethod
 
-
-class BaseOperator:
+class BaseOperator(ABC):
     """
     BaseOperator for databases
     """
@@ -33,6 +33,7 @@ class BaseOperator:
         self._password = password
         self._port = port
 
+    @abstractmethod
     def _authorization_database(self) -> engine.base.Engine:
         """
         Creating connector engine to some database.
