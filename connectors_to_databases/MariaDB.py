@@ -31,7 +31,7 @@ class MariaDB(BaseOperator):
         """
         Creating connector engine to database MariaDB.
         """
-
+        
         # mariadb+mariadbconnector
         engine_str = f'mariadb+pymysql://' \
                      f'{self._login}:{quote(self._password)}@{self._host}:{self._port}/' \
