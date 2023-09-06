@@ -61,14 +61,15 @@ def test_execute_df():
 
     assert len(df) == 1
     assert isinstance(df, pd.DataFrame)
-# 
-# def test_get_uri():
-#     """
-#     Checking for getting a uri for use outside class methods.
-#     """
-# 
-#     m = MariaDB(
-#         port=1
-#     )
-# 
-#     m.get_uri().execute('DROP TABLE IF EXISTS test')
+
+def test_get_uri():
+    """
+    Checking for getting a uri for use outside class methods.
+    """
+
+    m = MariaDB(
+        host='127.0.0.1',
+        port=2,
+    )
+
+    m.get_uri().execute('DROP TABLE IF EXISTS test')
