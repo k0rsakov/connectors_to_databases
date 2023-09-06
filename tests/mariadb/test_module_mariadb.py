@@ -3,6 +3,19 @@ import pandas as pd
 from connectors_to_databases.MariaDB import MariaDB
 
 
+def test_connection():
+    """
+    Checking connection to database.
+    """
+    m = MariaDB(
+        host='127.0.0.1',
+        port=2,
+    )
+    
+    check = m.check_connection_to_database()
+    
+    assert check
+
 def test_execute_script():
     """
     Checking the script for execution.
