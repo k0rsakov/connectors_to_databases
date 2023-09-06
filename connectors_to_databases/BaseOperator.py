@@ -12,13 +12,14 @@ class BaseOperator:
     """
     BaseOperator for databases
     """
-    def __init__(self,
-                 host: str = 'localhost',
-                 port: int = None,
-                 database: str = None,
-                 login: str = None,
-                 password: str = None,
-                 ):
+    def __init__(
+            self,
+            host: str = 'localhost',
+            port: int = None,
+            database: str = None,
+            login: str = None,
+            password: str = None,
+    ):
         """
         :param host: Host/IP database; default 'localhost'.
         :param database: name database; default 'None'.
@@ -34,7 +35,7 @@ class BaseOperator:
 
     def _authorization_database(self) -> engine.base.Engine:
         """
-        Creating connector engine to database PostgreSQL.
+        Creating connector engine to some database.
         """
 
         engine_str = f'base://' \
@@ -83,9 +84,9 @@ class BaseOperator:
             
             >>> pg = PostgreSQL()
             >>> dict_ = {'id': '41e5091e-6e97-4670-a4c9-7d6d4cc7c2af', 'date': '2020-01-01', 'amount': 100}
-            >>> df = pd.DataFrame([dict_])
+            >>> df_foo = pd.DataFrame([dict_]) # noqa: PD901
             >>> pg.insert_df(
-            ...    df=df, 
+            ...    df=df_foo, 
             ...    table_name='tmp_fct_sales', 
             ...    table_schema='public',
             ...    dtype={
@@ -104,12 +105,12 @@ class BaseOperator:
             chunksize=chunksize,
             index=index,
             if_exists=if_exists,
-            dtype=dtype
+            dtype=dtype,
         )
 
     def execute_to_df(
             self,
-            sql_query: str = SQLQuery,
+            sql_query: SQLQuery = None,
     ) -> Union[pd.DataFrame, Exception]:
         """
         Getting data from database with SQL-query.
@@ -125,10 +126,10 @@ class BaseOperator:
 
     def execute_script(
             self,
-            manual_sql_script: SQLQuery
+            manual_sql_script: SQLQuery = None,
     ) -> None:
         """
-        Execute manual scripts (INSERT, TRUNCATE, DROP, CREATE, etc). Other than SELECT
+        Execute manual scripts (INSERT, TRUNCATE, DROP, CREATE, etc.). Other than SELECT
 
         :param manual_sql_script: query with manual script; default `''`.
         :return: None.
@@ -150,6 +151,6 @@ class BaseOperator:
 
         :return: boolean True, if connection to database is successful, Exception otherwise.
         """
-        df = self.execute_to_df('SELECT 1 AS ONE')
+        df = self.execute_to_df('SELECT 1 AS ONE')  # noqa: PD901
 
         return bool(isinstance(df, pd.DataFrame))
