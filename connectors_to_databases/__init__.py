@@ -7,6 +7,8 @@
 from .ClickHouse import ClickHouse # noqa: F401
 from .PostgreSQL import PostgreSQL # noqa: F401
 from .TypeHinting import SQLQuery # noqa: F401
+from .MariaDB import MariaDB # noqa: F401
+from .MSSQL import MSSQL # noqa: F401
 
 # __author__ = 'k0rsakov'
 # __version__ = '1.0.0'

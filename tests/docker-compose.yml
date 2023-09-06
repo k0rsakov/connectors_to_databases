@@ -32,6 +32,16 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
 
+  maria_db:
+    image: mariadb
+    ports:
+      - "2:3306"
+    networks:
+        - ch_ntw
+    environment:
+      MARIADB_USER: root
+      MARIADB_ROOT_PASSWORD: root
+
 networks:
   ch_ntw:
     driver: bridge

@@ -35,6 +35,8 @@ setup(
         'clickhouse-sqlalchemy==0.2.3',
         'clickhouse_driver==0.2.5',
         'ruff==0.0.278',
+        'mariadb==1.1.7',
+        'pymysql==1.1.0',
     ],
 
     classifiers=[

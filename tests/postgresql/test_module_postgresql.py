@@ -15,7 +15,7 @@ def test_execute_script():
 
     pg.execute_script('CREATE TABLE test(id bigserial PRIMARY KEY, value int8)')
 
-    df = pg.execute_to_df(
+    df = pg.execute_to_df(  # noqa: PD901
         '''
         SELECT
             *
@@ -37,15 +37,15 @@ def test_insert_pg_table():
         port=1
     )
 
-    d = {'value': [i for i in range(10000)]}
-    df = pd.DataFrame(d)
+    d = {'value': list(range(10000))}
+    df = pd.DataFrame(d)  # noqa: PD901
     pg.insert_df(
         df=df,
         chunksize=None,
-        pg_table_name='test'
+        table_name='test'
     )
 
-    df = pg.execute_to_df('SELECT * FROM test')
+    df = pg.execute_to_df('SELECT * FROM test') # noqa: PD901
 
     assert len(df) == 10000
 
@@ -59,7 +59,7 @@ def test_execute_df():
         port=1
     )
 
-    df = pg.execute_to_df('SELECT count(value) FROM test')
+    df = pg.execute_to_df('SELECT count(value) FROM test') # noqa: PD901
 
     assert len(df) == 1
     assert isinstance(df, pd.DataFrame)
