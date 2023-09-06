@@ -1,3 +1,4 @@
+import pandas as pd
 
 from connectors_to_databases.MariaDB import MariaDB
 
@@ -13,7 +14,7 @@ def test_execute_script():
         port=2,
     )
 
-    m.execute_script('CREATE TABLE IF NOT EXISTS  test(id int8 PRIMARY KEY, value int8)')
+    m.execute_script('CREATE TABLE IF NOT EXISTS test(id INT8 AUTO_INCREMENT PRIMARY KEY, value int8)')
 
     df = m.execute_to_df(  # noqa: PD901
         '''
@@ -24,26 +25,26 @@ def test_execute_script():
 
     assert len(df) == 1
 
-# def test_insert_m_table():
-#     """
-#     Checking the method for inserting data.
-#     """
-#     m = MariaDB(
-#         host='127.0.0.1',
-#         port=2,
-#     )
-# 
-#     d = {'value': list(range(10000))}
-#     df = pd.DataFrame(d) # noqa: PD901
-#     m.insert_df(
-#         df=df,
-#         chunksize=None,
-#         table_name='test'
-#     )
-# 
-#     df = m.execute_to_df('SELECT * FROM test') # noqa: PD901
-# 
-#     assert len(df) == 10000
+def test_insert_m_table():
+    """
+    Checking the method for inserting data.
+    """
+    m = MariaDB(
+        host='127.0.0.1',
+        port=2,
+    )
+
+    d = {'value': list(range(10000))}
+    df = pd.DataFrame(d) # noqa: PD901
+    m.insert_df(
+        df=df,
+        chunksize=None,
+        table_name='test'
+    )
+
+    df = m.execute_to_df('SELECT * FROM test') # noqa: PD901
+
+    assert len(df) == 10000
 # 
 # 
 # def test_execute_df():
