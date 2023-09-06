@@ -25,7 +25,7 @@ def test_execute_script():
         '''
     )
 
-    df = ch.execute_to_df(
+    df = ch.execute_to_df( # noqa: PD901
         '''
         SELECT
             *
@@ -48,15 +48,15 @@ def test_insert_ch_table():
         password='click',
     )
 
-    d = {'value': [i for i in range(1000000)]}
-    df = pd.DataFrame(d)
+    d = {'value': list(range(1000000))}
+    df = pd.DataFrame(d) # noqa: PD901
     ch.insert_df(
         df=df,
         chunksize=None,
-        pg_table_name='test'
+        table_name='test'
     )
 
-    df = ch.execute_to_df('SELECT * FROM test')
+    df = ch.execute_to_df('SELECT * FROM test') # noqa: PD901
 
     assert len(df) == 1000000
 
@@ -71,7 +71,7 @@ def test_execute_df():
         password='click',
     )
 
-    df = ch.execute_to_df('SELECT count(value) FROM test')
+    df = ch.execute_to_df('SELECT count(value) FROM test')  # noqa: PD901
 
     assert len(df) == 1
     assert isinstance(df, pd.DataFrame)
