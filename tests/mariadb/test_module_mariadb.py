@@ -45,22 +45,22 @@ def test_insert_m_table():
     df = m.execute_to_df('SELECT * FROM test') # noqa: PD901
 
     assert len(df) == 10000
-# 
-# 
-# def test_execute_df():
-#     """
-#     Checking the method for extracting data into a dataframe.
-#     """
-# 
-#     m = MariaDB(
-#         host='127.0.0.1',
-#         port=2,
-#     )
-# 
-#     df = m.execute_to_df('SELECT count(value) FROM test') # noqa: PD901
-# 
-#     assert len(df) == 1
-#     assert isinstance(df, pd.DataFrame)
+
+
+def test_execute_df():
+    """
+    Checking the method for extracting data into a dataframe.
+    """
+
+    m = MariaDB(
+        host='127.0.0.1',
+        port=2,
+    )
+
+    df = m.execute_to_df('SELECT count(value) FROM test') # noqa: PD901
+
+    assert len(df) == 1
+    assert isinstance(df, pd.DataFrame)
 # 
 # def test_get_uri():
 #     """
