@@ -69,7 +69,7 @@ m.get_uri()
 What does the connector look like
 
 ```log
-Engine(MariaDB://mariadb+mariadbconnector:***@localhost:3306/sys)
+Engine(mariadb+pymysql://root:***@127.0.0.1:2/sys)
 ```
 
 ## Delete our `simple_` table
