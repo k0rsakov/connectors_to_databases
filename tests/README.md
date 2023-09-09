@@ -31,6 +31,14 @@ To run MariaDB tests, run the command:
 python -m pytest tests/mariadb/test_module_mariadb.py
 ```
 
+## MySQL
+
+To run MySQL tests, run the command:
+
+```bash
+python -m pytest tests/mysql/test_module_mysql.py
+```
+
 ## PostgreSQL
 
 To run PostgreSQL tests, run the command:

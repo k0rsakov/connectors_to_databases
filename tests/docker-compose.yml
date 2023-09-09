@@ -42,6 +42,16 @@ services:
       MARIADB_USER: root
       MARIADB_ROOT_PASSWORD: root
 
+  mysql_db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3:3306"
+    networks:
+        - ch_ntw
+
 networks:
   ch_ntw:
     driver: bridge

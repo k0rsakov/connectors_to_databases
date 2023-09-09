@@ -8,8 +8,12 @@
 ![PG](https://img.shields.io/badge/ClickHouse-white?style=for-the-badge&logo=clickhouse&logoColor=yellow)
 
 **Connector to databases** – easy package for connect with database:
-- [PostgreSQL](https://github.com/postgres/postgres)
+
 - [ClickHouse](https://github.com/ClickHouse/ClickHouse)
+- [MariaDB](https://github.com/MariaDB/server)
+- [MSSQL](https://www.microsoft.com/en/sql-server/sql-server-2019)
+- [MySQL](https://github.com/mysql/mysql-server)
+- [PostgreSQL](https://github.com/postgres/postgres)- 
 
 ## Installation
 
@@ -30,6 +34,9 @@ pip install https://github.com/k0rsakov/connectors_to_databases/archive/refs/hea
 
 How to use connections:
 - [ClickHouse.md](doc/ClickHouse.md)
+- [MariaDB.md](doc/MariaDB.md)
+- [MSSQL.md](doc/MSSQL.md)
+- [MySQL.md](doc/MySQL.md)
 - [PostgreSQL.md](doc/PostgreSQL.md)
 
 ## Contributing
