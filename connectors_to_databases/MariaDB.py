@@ -4,16 +4,21 @@ from sqlalchemy import create_engine, engine
 
 from connectors_to_databases.BaseOperator import BaseOperator
 
+
 class MariaDB(BaseOperator):
+    """Connector to MariaDB database."""
+
     def __init__(
             self,
-            host: str = '127.0.0.1',
+            host: str = "127.0.0.1",
             port: int = 3306,
-            database: str = 'sys',
-            login: str = 'root',
-            password: str = 'root'
+            database: str = "sys",
+            login: str = "root",
+            password: str = "root",  # noqa: S107
     ):
         """
+        Init class.
+
         :param host: Host/IP database; default 'localhost'.
         :param database: name database; default 'sys'.
         :param port: port database; default 3306.
@@ -28,13 +33,11 @@ class MariaDB(BaseOperator):
         self._port = port
 
     def _authorization_database(self) -> engine.base.Engine:
-        """
-        Creating connector engine to database MariaDB.
-        """
-        
+        """Creating connector engine to database MariaDB."""
+
         # mariadb+mariadbconnector
-        engine_str = f'mariadb+pymysql://' \
-                     f'{self._login}:{quote(self._password)}@{self._host}:{self._port}/' \
-                     f'{self._database}'
+        engine_str = f"mariadb+pymysql://" \
+                     f"{self._login}:{quote(self._password)}@{self._host}:{self._port}/" \
+                     f"{self._database}"
 
         return create_engine(engine_str)

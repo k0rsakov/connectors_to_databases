@@ -1,6 +1,6 @@
-def list_values_in_str_with_double_quotes(list_columns: list = None) -> str:  # noqa: RUF013
+def list_values_in_str_with_double_quotes(list_columns: list = None) -> str:
     """
-    **Function: list_values_in_str_with_double_quotes**
+    **Function: list_values_in_str_with_double_quotes.**
 
     This function takes a list of values as the `list_columns` parameter and returns a string where each
     value is enclosed in double quotes.
@@ -36,11 +36,12 @@ def list_values_in_str_with_double_quotes(list_columns: list = None) -> str:  # 
     @return: A string containing values enclosed in double quotes and separated by commas.
     """
 
-    return ', '.join([f"\"{value}\"" for value in list_columns])
+    return ", ".join([f'"{value}"' for value in list_columns])
 
-def list_values_in_str_with_single_quotes(list_columns: list = None) -> str:  # noqa: RUF013
+
+def list_values_in_str_with_single_quotes(list_columns: list = None) -> str:
     """
-    **Function: list_values_in_str_with_single_quotes**
+    **Function: list_values_in_str_with_single_quotes.**
 
     This function takes a list of values as the `list_columns` parameter and returns a string where each
     value is enclosed in single quotes.
@@ -76,4 +77,4 @@ def list_values_in_str_with_single_quotes(list_columns: list = None) -> str:  # 
     @return: A string containing values enclosed in single quotes and separated by commas.
     """
 
-    return ', '.join([f"'{value}'" for value in list_columns])
+    return ", ".join([f"'{value}'" for value in list_columns])

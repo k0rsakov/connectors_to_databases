@@ -1,6 +1,6 @@
-from typing import Iterable
-
+from collections.abc import Iterable
 from urllib.parse import quote
+
 import pandas as pd
 from sqlalchemy import create_engine, engine
 
@@ -8,19 +8,21 @@ from connectors_to_databases.BaseOperator import BaseOperator
 
 from .helper_functions.function_list import list_values_in_str_with_double_quotes, list_values_in_str_with_single_quotes
 
+
 class PostgreSQL(BaseOperator):
-    """
-    Connector to PostgreSQL database
-    """
+    """Connector to PostgreSQL database."""
+
     def __init__(
             self,
-            host: str = 'localhost',
+            host: str = "localhost",
             port: int = 5432,
-            database: str = 'postgres',
-            login: str = 'postgres',
-            password: str = 'postgres'
+            database: str = "postgres",
+            login: str = "postgres",
+            password: str = "postgres",
     ):
         """
+        Init class.
+
         :param host: Host/IP database; default 'localhost'.
         :param database: name database; default 'localhost'.
         :param port: port database; default 5432.
@@ -39,25 +41,25 @@ class PostgreSQL(BaseOperator):
         Creating connector engine to database PostgreSQL.
         """
 
-        engine_str = f'postgresql://' \
-                     f'{self._login}:{quote(self._password)}@{self._host}:{self._port}/' \
-                     f'{self._database}'
+        engine_str = f"postgresql://" \
+                     f"{self._login}:{quote(self._password)}@{self._host}:{self._port}/" \
+                     f"{self._database}"
 
         return create_engine(engine_str)
 
     @classmethod
     def generate_on_conflict_sql_query(
             cls,
-            source_table_schema_name: str = 'public',
-            source_table_name: str = None, # noqa: RUF013
-            target_table_schema_name: str = 'public',
-            target_table_name: str = None, # noqa: RUF013
-            list_columns: Iterable[str] = None, # noqa: RUF013
-            pk: str | list[str, ...] = 'id',
+            source_table_schema_name: str = "public",
+            source_table_name: str = None,
+            target_table_schema_name: str = "public",
+            target_table_name: str = None,
+            list_columns: Iterable[str] = None,
+            pk: str | list[str, ...] = "id",
             replace: bool = False,
     ) -> str:
         """
-        **Function: generate_on_conflict_sql_query**
+        **Function: generate_on_conflict_sql_query.**
 
         This class method generates an SQL query for performing data insertion with conflict handling using a
         specified primary key.
@@ -132,24 +134,23 @@ class PostgreSQL(BaseOperator):
         pk = list_values_in_str_with_double_quotes(list_columns=pk) if isinstance(pk, list) else f'"{pk}"'
 
         if replace:
-            replace = f'''DO UPDATE SET {', '.join([f'"{i}" = EXCLUDED."{i}"' for i in list_columns])}'''
+            replace = f"""DO UPDATE SET {', '.join([f'"{i}" = EXCLUDED."{i}"' for i in list_columns])}"""
         else:
-            replace = 'DO NOTHING'
+            replace = "DO NOTHING"
 
-
-        sql = f'''
+        sql = f"""
         INSERT INTO {target_table_schema_name}.{target_table_name} 
         (
             {list_values_in_str_with_double_quotes(list_columns=list_columns)}
         )
-        SELECT 
+        SELECT
             {list_values_in_str_with_double_quotes(list_columns=list_columns)} 
-        FROM 
+        FROM
             {source_table_schema_name}.{source_table_name}
         ON CONFLICT ({pk}) {replace}
-        '''
+        """
 
-        return sql # noqa: RET504
+        return sql  # noqa: RET504
 
     def get_database_description(
             self,
@@ -157,7 +158,7 @@ class PostgreSQL(BaseOperator):
             table_schema: str | list[str, ...] = None,
     ) -> pd.DataFrame:
         """
-        **Function: get_database_description**
+        **Function: get_database_description.**
 
         This method retrieves descriptive information about tables, columns, and their descriptions within a
         PostgreSQL database schema.
@@ -187,26 +188,26 @@ class PostgreSQL(BaseOperator):
         :param table_schema: The table schema.
         :return: pd.DataFrame with descriptive information about the tables and columns.
         """
-        
-        where_condition = ''
+
+        where_condition = ""
 
         if table_name:
             if table_name and not isinstance(table_name, list):
-                where_condition += f'''AND all_columns.table_name='{table_name}'\n'''
+                where_condition += f"""AND all_columns.table_name='{table_name}'\n"""
             else:
-                where_condition += f'''AND all_columns.table_name IN ({list_values_in_str_with_single_quotes(
+                where_condition += f"""AND all_columns.table_name IN ({list_values_in_str_with_single_quotes(
                     list_columns=table_name
-                )})\n'''
-                
+                )})\n"""
+
         if table_schema:
             if table_schema and not isinstance(table_schema, list):
-                where_condition += f'''AND all_columns.table_schema='{table_schema}'\n'''
+                where_condition += f"""AND all_columns.table_schema='{table_schema}'\n"""
             else:
-                where_condition += f'''AND all_columns.table_schema IN ({list_values_in_str_with_single_quotes(
+                where_condition += f"""AND all_columns.table_schema IN ({list_values_in_str_with_single_quotes(
                     list_columns=table_schema
-                )})\n'''
-            
-        sql_query = f'''
+                )})\n"""
+
+        sql_query = f"""
         SELECT
             all_columns.table_schema,
             schema_info.schema_description,
@@ -222,12 +223,12 @@ class PostgreSQL(BaseOperator):
                 *
             FROM
                 pg_catalog.pg_statio_all_tables AS st
-            LEFT JOIN pg_catalog.pg_description pgd 
+            LEFT JOIN pg_catalog.pg_description pgd
                 ON pgd.objoid = st.relid
             LEFT JOIN information_schema.columns AS c
                 ON pgd.objsubid = c.ordinal_position
                 AND c.table_schema = st.schemaname
-                AND c.table_name = st.relname 
+                AND c.table_name = st.relname
             ) AS columns_info
                 ON all_columns.table_schema = columns_info.schemaname
                 AND all_columns.table_name = columns_info.relname
@@ -238,13 +239,13 @@ class PostgreSQL(BaseOperator):
                 pg_catalog.obj_description(pgc.oid, 'pg_class') AS table_description
             FROM
                 information_schema.tables AS t
-            INNER JOIN pg_catalog.pg_class AS pgc 
+            INNER JOIN pg_catalog.pg_class AS pgc
                 ON t.table_name = pgc.relname
             WHERE
                 t.table_type = 'BASE TABLE'
                 AND pg_catalog.obj_description(pgc.oid, 'pg_class') IS NOT NULL
             ) AS table_info
-                ON	
+                ON
                     table_info.table_name = all_columns.table_name
                     AND table_info.table_schema = all_columns.table_schema
         INNER JOIN (
@@ -252,13 +253,12 @@ class PostgreSQL(BaseOperator):
                 nspname,
                 obj_description(oid) AS schema_description
             FROM
-                pg_catalog.pg_namespace 
-            ) AS schema_info 
+                pg_catalog.pg_namespace
+            ) AS schema_info
                 ON schema_info.nspname = all_columns.table_schema
         WHERE
             all_columns.table_schema != 'pg_catalog'
             {where_condition}
-	    '''
+        """
 
         return self.execute_to_df(sql_query=sql_query)
-        

@@ -4,16 +4,21 @@ from sqlalchemy import create_engine, engine
 
 from connectors_to_databases.BaseOperator import BaseOperator
 
+
 class MSSQL(BaseOperator):
+    """Connector to MSSQL database."""
+
     def __init__(
             self,
-            host: str = 'localhost',
+            host: str = "localhost",
             port: int = 1433,
-            database: str = 'master',
-            login: str = 'SA',
-            password: str = 'SA'
+            database: str = "master",
+            login: str = "SA",
+            password: str = "SA",  # noqa: S107
     ):
         """
+        Init class.
+
         :param host: Host/IP database; default 'localhost'.
         :param database: name database; default 'localhost'.
         :param port: port database; default 1433.
@@ -28,12 +33,10 @@ class MSSQL(BaseOperator):
         self._port = port
 
     def _authorization_database(self) -> engine.base.Engine:
-        """
-        Creating connector engine to database PostgreSQL.
-        """
+        """Creating connector engine to database MSSQL."""
 
-        engine_str = f'mssql+pymssql://' \
-                     f'{self._login}:{quote(self._password)}@{self._host}:{self._port}/' \
-                     f'{self._database}'
+        engine_str = f"mssql+pymssql://" \
+                     f"{self._login}:{quote(self._password)}@{self._host}:{self._port}/" \
+                     f"{self._database}"
 
         return create_engine(engine_str)
