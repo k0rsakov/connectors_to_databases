@@ -43,6 +43,16 @@ How to use connections:
 
 Bug reports and/or pull requests are welcome
 
+### Create `venv`
+
+```bash
+python3.11 -m venv venv && \
+source venv/bin/activate && \
+pip install --upgrade pip && \
+pip install -r requirements.txt
+```
+
+
 ## License
 
 The module is available as open source under the terms of the 
