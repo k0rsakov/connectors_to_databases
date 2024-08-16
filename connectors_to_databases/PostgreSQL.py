@@ -139,12 +139,12 @@ class PostgreSQL(BaseOperator):
             replace = "DO NOTHING"
 
         sql = f"""
-        INSERT INTO {target_table_schema_name}.{target_table_name} 
+        INSERT INTO {target_table_schema_name}.{target_table_name}
         (
             {list_values_in_str_with_double_quotes(list_columns=list_columns)}
         )
         SELECT
-            {list_values_in_str_with_double_quotes(list_columns=list_columns)} 
+            {list_values_in_str_with_double_quotes(list_columns=list_columns)}
         FROM
             {source_table_schema_name}.{source_table_name}
         ON CONFLICT ({pk}) {replace}
@@ -166,8 +166,7 @@ class PostgreSQL(BaseOperator):
         **Parameters:**
         - `table_name` (str | list[str, ...]): The name of the table or list of tables. If provided, the function 
         will filter results to include only the specified table(s). Default is `None`.
-        - `table_schema` (str | list[str, ...]): The schema name of the table or list of tables. If provided, the 
-        function will filter results to include only the specified schema(s). Default is `None`.
+        - `table_schema` (str | list[str, ...]): The schema name of the table or list of tables. If provided, the        function will filter results to include only the specified schema(s). Default is `None`.
         
         **Return:**
         - `pd.DataFrame`: A pandas DataFrame containing descriptive information about the tables and columns.
