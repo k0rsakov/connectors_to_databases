@@ -153,6 +153,6 @@ class BaseOperator(ABC):
 
         :return: boolean True, if connection to database is successful, Exception otherwise.
         """ # noqa D415
-        df = self.execute_to_df("SELECT 1 AS ONE")  # noqa: PD901
+        df = self.execute_to_df("SELECT 1 AS ONE")
 
         return bool(isinstance(df, pd.DataFrame))
