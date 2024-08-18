@@ -33,7 +33,7 @@ class MySQL(BaseOperator):
         self._port = port
 
     def _authorization_database(self) -> engine.base.Engine:
-        """Creating connector engine to database MySQL."""
+        """Creating connector engine to database MySQL.""" # noqa D401
 
         engine_str = f"mysql+pymysql://" \
                      f"{self._login}:{quote(self._password)}@{self._host}:{self._port}/" \

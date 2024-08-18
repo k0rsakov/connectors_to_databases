@@ -33,7 +33,7 @@ class MariaDB(BaseOperator):
         self._port = port
 
     def _authorization_database(self) -> engine.base.Engine:
-        """Creating connector engine to database MariaDB."""
+        """Creating connector engine to database MariaDB.""" # noqa D401
 
         # mariadb+mariadbconnector
         engine_str = f"mariadb+pymysql://" \

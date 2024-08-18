@@ -18,7 +18,7 @@ class PostgreSQL(BaseOperator):
             port: int = 5432,
             database: str = "postgres",
             login: str = "postgres",
-            password: str = "postgres",
+            password: str = "postgres",  # noqa: S107
     ):
         """
         Init class.
@@ -37,9 +37,7 @@ class PostgreSQL(BaseOperator):
         self._port = port
 
     def _authorization_database(self) -> engine.base.Engine:
-        """
-        Creating connector engine to database PostgreSQL.
-        """
+        """Creating connector engine to database PostgreSQL."""  # noqa: D401
 
         engine_str = f"postgresql://" \
                      f"{self._login}:{quote(self._password)}@{self._host}:{self._port}/" \
@@ -129,7 +127,7 @@ class PostgreSQL(BaseOperator):
         :param replace: A flag indicating whether to replace existing data in case of conflicts.
         Defaults to `False`, which means conflicts will be ignored and nothing will be done; default `False`.
         :return: The generated SQL query for data insertion with conflict handling.
-        """
+        """ # noqa D415
 
         pk = list_values_in_str_with_double_quotes(list_columns=pk) if isinstance(pk, list) else f'"{pk}"'
 
@@ -186,7 +184,7 @@ class PostgreSQL(BaseOperator):
         :param table_name: The table name.
         :param table_schema: The table schema.
         :return: pd.DataFrame with descriptive information about the tables and columns.
-        """
+        """ # noqa D415
 
         where_condition = ""
 

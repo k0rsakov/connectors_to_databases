@@ -39,7 +39,7 @@ class BaseOperator(ABC):
         Creating connector engine to some database.
 
         :return: engine for database.
-        """
+        """ # noqa D415
 
         engine_str = f"base://" \
                      f"{self._login}:{quote(self._password)}@{self._host}:{self._port}/" \
@@ -56,7 +56,7 @@ class BaseOperator(ABC):
             index: bool = False,
             if_exists: str = "append",
             dtype: None | dict = None,
-    ) -> None | Exception:
+    ) -> None:
         """
         Inserting data from dataframe to database.
          
@@ -98,7 +98,7 @@ class BaseOperator(ABC):
             ...    }
             ... )
 
-        """
+        """ # noqa D415
 
         df.to_sql(
             name=table_name,
@@ -119,7 +119,7 @@ class BaseOperator(ABC):
 
         :param sql_query; default `''`.
         :return: DataFrame with data from database.
-        """
+        """ # noqa D415
 
         return pd.read_sql(
             sql=sql_query,
@@ -152,7 +152,7 @@ class BaseOperator(ABC):
         Method to check connection to database.
 
         :return: boolean True, if connection to database is successful, Exception otherwise.
-        """
+        """ # noqa D415
         df = self.execute_to_df("SELECT 1 AS ONE")  # noqa: PD901
 
         return bool(isinstance(df, pd.DataFrame))
