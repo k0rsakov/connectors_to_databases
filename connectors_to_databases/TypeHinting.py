@@ -1,4 +1,2 @@
-"""
-Any SQL-script
-"""
-SQLQuery: str = ''
+"""Any SQL-script."""
+SQLQuery: str = ""

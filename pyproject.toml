@@ -1,3 +1,24 @@
+[tool.ruff.lint]
+select = ["A", "E", "I", "U", "B", "C", "D", "F", "G", "RUF100", "N",  "Q", "R", "S", "T",  "W", "COM"]
+ignore = [
+    # Multi-line docstring summary should start at the first line
+    "D212",
+    # No blank lines allowed after function docstring (found {num_lines})
+    "D202",
+    # Probable insecure usage of temporary file or directory: "{}"
+    "S108",
+    # Missing docstring in public module
+    "D100",
+    # Logging statement uses f-string
+    "G004",
+    # Possible SQL injection vector through string-based query construction
+    "S608",
+    # Checks for docstrings on class definitions that are not preceded by a blank line.
+    "D203",
+    # Checks for uses of the assert keyword.
+    "S101"
+]
+
 [tool.ruff]
 # Enable the pycodestyle (`E`) and Pyflakes (`F`) rules by default.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or

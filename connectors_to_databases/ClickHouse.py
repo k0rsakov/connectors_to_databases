@@ -6,18 +6,20 @@ from .BaseOperator import BaseOperator
 
 # TODO: Change sqlalchemy to clickhouse-driver
 
+
 class ClickHouse(BaseOperator):
-    """
-    Connector to PostgreSQL database
-    """
+    """Connector to ClickHouse database."""
+
     def __init__(
             self,
-            host: str = 'localhost',
+            host: str = "localhost",
             port: int = 8123,
-            login: str = 'default',
-            password: str = 'default'
+            login: str = "default",
+            password: str = "default",  # noqa: S107
     ):
         """
+        Init class.
+
         :param host: Host/IP database; default 'localhost'.
         :param port: port database; default '8123'.
         :param login: login to database; default 'default'.
@@ -30,10 +32,8 @@ class ClickHouse(BaseOperator):
         self._port = port
 
     def _authorization_database(self) -> engine.base.Engine:
-        """
-        Creating connector engine to database ClickHouse.
-        """
+        """Creating connector engine to database ClickHouse.""" # noqa D401
 
-        engine_str = f'clickhouse://{self._login}:{quote(self._password)}@{self._host}:{self._port}/default'
+        engine_str = f"clickhouse://{self._login}:{quote(self._password)}@{self._host}:{self._port}/default"
 
         return create_engine(engine_str)

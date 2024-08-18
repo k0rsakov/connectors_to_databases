@@ -1,26 +1,26 @@
+from abc import ABC, abstractmethod
 from urllib.parse import quote
-from typing import Union
-
-from sqlalchemy import create_engine, engine
 
 import pandas as pd
+from sqlalchemy import create_engine, engine
 
 from .TypeHinting import SQLQuery
-from abc import ABC, abstractmethod
+
 
 class BaseOperator(ABC):
-    """
-    BaseOperator for databases
-    """
+    """BaseOperator for databases."""
+
     def __init__(
             self,
-            host: str = 'localhost',
+            host: str = "localhost",
             port: int = None,
             database: str = None,
             login: str = None,
             password: str = None,
     ):
         """
+        Init class.
+
         :param host: Host/IP database; default 'localhost'.
         :param database: name database; default 'None'.
         :param port: port database; default 'None'.
@@ -37,11 +37,13 @@ class BaseOperator(ABC):
     def _authorization_database(self) -> engine.base.Engine:
         """
         Creating connector engine to some database.
-        """
 
-        engine_str = f'base://' \
-                     f'{self._login}:{quote(self._password)}@{self._host}:{self._port}/' \
-                     f'{self._database}'
+        :return: engine for database.
+        """ # noqa D415
+
+        engine_str = f"base://" \
+                     f"{self._login}:{quote(self._password)}@{self._host}:{self._port}/" \
+                     f"{self._database}"
 
         return create_engine(engine_str)
 
@@ -50,11 +52,11 @@ class BaseOperator(ABC):
             df: pd.DataFrame = None,
             table_name: str = None,
             table_schema: str = None,
-            chunksize: Union[int, None] = 10024,
+            chunksize: int | None = 10024,
             index: bool = False,
-            if_exists: str = 'append',
-            dtype: Union[None, dict] = None,
-    ) -> Union[None, Exception]:
+            if_exists: str = "append",
+            dtype: None | dict = None,
+    ) -> None:
         """
         Inserting data from dataframe to database.
          
@@ -76,8 +78,8 @@ class BaseOperator(ABC):
             SQLAlchemy types or strings for the sqlite3 legacy mode. If a
             scalar is provided, it will be applied to all columns.
             
-            Example:
-            
+        Example:
+        -------
             Create df
             >>> from connectors_to_databases import PostgreSQL
             >>> import sqlalchemy
@@ -96,8 +98,7 @@ class BaseOperator(ABC):
             ...    }
             ... )
 
-            
-        """
+        """ # noqa D415
 
         df.to_sql(
             name=table_name,
@@ -112,13 +113,13 @@ class BaseOperator(ABC):
     def execute_to_df(
             self,
             sql_query: SQLQuery = None,
-    ) -> Union[pd.DataFrame, Exception]:
+    ) -> pd.DataFrame | Exception:
         """
         Getting data from database with SQL-query.
 
         :param sql_query; default `''`.
         :return: DataFrame with data from database.
-        """
+        """ # noqa D415
 
         return pd.read_sql(
             sql=sql_query,
@@ -130,7 +131,7 @@ class BaseOperator(ABC):
             manual_sql_script: SQLQuery = None,
     ) -> None:
         """
-        Execute manual scripts (INSERT, TRUNCATE, DROP, CREATE, etc.). Other than SELECT
+        Execute manual scripts (INSERT, TRUNCATE, DROP, CREATE, etc.). Other than SELECT.
 
         :param manual_sql_script: query with manual script; default `''`.
         :return: None.
@@ -146,12 +147,12 @@ class BaseOperator(ABC):
 
         return self._authorization_database()
 
-    def check_connection_to_database(self) -> Union[bool, Exception]:
+    def check_connection_to_database(self) -> bool | Exception:
         """
         Method to check connection to database.
 
         :return: boolean True, if connection to database is successful, Exception otherwise.
-        """
-        df = self.execute_to_df('SELECT 1 AS ONE')  # noqa: PD901
+        """ # noqa D415
+        df = self.execute_to_df("SELECT 1 AS ONE")  # noqa: PD901
 
         return bool(isinstance(df, pd.DataFrame))
