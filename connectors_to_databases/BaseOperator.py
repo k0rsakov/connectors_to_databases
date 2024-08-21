@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from urllib.parse import quote
 
 import pandas as pd
-from sqlalchemy import create_engine, engine
+from sqlalchemy import create_engine, engine, text
 
 from .TypeHinting import SQLQuery
 
@@ -136,7 +136,10 @@ class BaseOperator(ABC):
         :param manual_sql_script: query with manual script; default `''`.
         :return: None.
         """
-        self._authorization_database().execute(manual_sql_script)
+        with self._authorization_database().engine.begin() as conn:
+            conn.execute(
+                text(manual_sql_script),
+            )
 
     def get_uri(self) -> engine.base.Engine:
         """
