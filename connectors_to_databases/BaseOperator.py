@@ -148,7 +148,7 @@ class BaseOperator(ABC):
         :return engine.base.Engine:
         """
 
-        return self._authorization_database()
+        return self._authorization_database().engine
 
     def check_connection_to_database(self) -> bool | Exception:
         """
