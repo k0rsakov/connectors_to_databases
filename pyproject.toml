@@ -77,8 +77,22 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = "3.12.4"
+python = "3.11.9"
+sqlalchemy = "^1.4.44"
+pandas = "^1.5.1"
+psycopg2-binary = "^2.9.5"
+clickhouse-sqlalchemy = "^0.2.3"
+clickhouse_driver = "^0.2.5"
+#mariadb = "^1.1.7"
+pymysql = "^1.1.0"
 
 [tool.poetry.group.dev.dependencies]
+python = "3.11.9"
+sqlalchemy = "^1.4.44"
+pandas = "^1.5.1"
+psycopg2-binary = "^2.9.5"
+clickhouse-sqlalchemy = "^0.2.3"
+clickhouse_driver = "^0.2.5"
+#mariadb = "^1.1.7"
+pymysql = "^1.1.0"
 ruff = "^0.6.1"
-pandas = "1.5.1"
