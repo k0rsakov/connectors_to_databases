@@ -16,7 +16,7 @@ setup(
     author_email="korsakov.iyu@gmail.com",
 
     description=(
-        "Python module for connect with PostgreSQL and ClickHouse "
+        "Python module for connect with DataBases"
     ),
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -29,15 +29,15 @@ setup(
     # TODO: deprecated psycopg2, clickhouse-sqlalchemy
     packages=["connectors_to_databases"],
     install_requires=[
-        "SQLAlchemy==1.4.44",
-        "pandas==1.5.1",
-        "psycopg2-binary==2.9.5",
+        # "SQLAlchemy==1.4.44",
+        # "pandas==1.5.1",
+        # "psycopg2-binary==2.9.5",
+        # "clickhouse-sqlalchemy==0.2.3",
+        # "clickhouse_driver==0.2.5",
+        # "ruff==0.0.278",
+        # "mariadb==1.1.7",
+        # "pymysql==1.1.0",
         # 'psycopg2==2.9.5',
-        "clickhouse-sqlalchemy==0.2.3",
-        "clickhouse_driver==0.2.5",
-        "ruff==0.0.278",
-        "mariadb==1.1.7",
-        "pymysql==1.1.0",
     ],
 
     classifiers=[

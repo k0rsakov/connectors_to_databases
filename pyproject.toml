@@ -16,15 +16,10 @@ ignore = [
     # Checks for docstrings on class definitions that are not preceded by a blank line.
     "D203",
     # Checks for uses of the assert keyword.
-    "S101"
+    "S101",
+    # Checks for module names that do not follow the snake_case naming convention or are otherwise invalid.
+    "N999",
 ]
-
-[tool.ruff]
-# Enable the pycodestyle (`E`) and Pyflakes (`F`) rules by default.
-# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
-# McCabe complexity (`C901`) by default.
-select = ["E", "F"]
-ignore = []
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
@@ -54,18 +49,53 @@ exclude = [
     "node_modules",
     "venv",
 ]
-per-file-ignores = {}
-
-# Same as Black.
-line-length = 120
-
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff]
+# Same as Black.
+line-length = 120
 
 # Assume Python 3.10.
 target-version = "py311"
 
-# Custom
-show-fixes = true
-extend-select = ['C4', 'SIM', 'TCH', 'N', 'ICN', 'T20', 'RSE', 'RET', 'SLF', 'ARG', 'TID', 'PD', 'PERF']
-extend-exclude = ['PD901']
+[tool.poetry]
+name = "connectors-to-databases"
+version = "1.1.2"
+description = "Python module for connect with DataBases"
+authors = ["Ivan Korsakov <korsakov.iyu@gmail.com>"]
+license = "Apache License"
+readme = "README.md"
+
+[tool.poetry.urls]
+"Homepage" = "https://github.com/yourusername/your-repo"
+"Bug Tracker" = "https://github.com/yourusername/your-repo/issues"
+"PyPi" = "https://pypi.org/project/connectors-to-databases/"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "3.11.9"
+sqlalchemy = "^1.4.44"
+pandas = "^1.5.1"
+numpy="1.26.4"
+psycopg2-binary = "^2.9.5"
+clickhouse-sqlalchemy = "^0.2.3"
+clickhouse_driver = "^0.2.5"
+#mariadb = "^1.1.7"
+pymysql = "^1.1.0"
+
+[tool.poetry.group.dev.dependencies]
+python = "3.11.9"
+sqlalchemy = "^1.4.44"
+pandas = "^1.5.1"
+numpy="1.26.4"
+psycopg2-binary = "^2.9.5"
+clickhouse-sqlalchemy = "^0.2.3"
+clickhouse_driver = "^0.2.5"
+#mariadb = "^1.1.7"
+pymysql = "^1.1.0"
+ruff = "^0.6.1"
+pytest = "^8.3.2"
