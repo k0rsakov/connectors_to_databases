@@ -2,6 +2,8 @@ from collections.abc import Sequence
 
 import clickhouse_connect
 import pandas as pd
+from clickhouse_connect.driver import Client
+from sqlalchemy import engine
 
 from connectors_to_databases.BaseOperator import BaseOperator
 from connectors_to_databases.TypeHinting import SQLQuery
@@ -101,3 +103,12 @@ class ClickHouse(BaseOperator):
             database=table_schema,
             column_type_names=dtype,
         )
+
+    def get_uri(self) -> Client:
+        """
+        Get connector for manual manipulation with connect to database.
+
+        :return engine.base.Engine:
+        """
+
+        return self._authorization_database()

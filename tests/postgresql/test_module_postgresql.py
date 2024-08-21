@@ -4,6 +4,7 @@ from sqlalchemy import text
 from connectors_to_databases.PostgreSQL import PostgreSQL
 
 
+# TODO: add fixtures
 def test_execute_script_drop():
     """
     Checking the script for execution.

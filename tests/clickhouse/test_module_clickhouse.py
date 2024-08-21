@@ -5,7 +5,8 @@ import pandas as pd
 from connectors_to_databases.ClickHouse import ClickHouse
 
 
-def test_get_authorization_database_and_drop_test_table():
+# TODO: add fixtures
+def test_get_uri_and_drop_test_table():
     """Checking for getting uri for use outside class methods."""
 
     ch = ClickHouse(
@@ -13,10 +14,10 @@ def test_get_authorization_database_and_drop_test_table():
         password="click",  # noqa: S106
     )
 
-    ch._authorization_database().query("DROP TABLE IF EXISTS test")
+    ch.get_uri().query("DROP TABLE IF EXISTS test")
 
 
-def test_get_authorization_database_and_drop_test_uuid_table():
+def test_get_uri_and_drop_test_uuid_table():
     """Checking for getting uri for use outside class methods."""
 
     ch = ClickHouse(
@@ -24,7 +25,7 @@ def test_get_authorization_database_and_drop_test_uuid_table():
         password="click",  # noqa: S106
     )
 
-    ch._authorization_database().query("DROP TABLE IF EXISTS test_uuid")
+    ch.get_uri().query("DROP TABLE IF EXISTS test_uuid")
 
 
 def test_execute_script():
@@ -130,3 +131,14 @@ def test_insert_ch_table_with_dtype():
     df = ch.execute_to_df("SELECT * FROM test_uuid")
 
     assert len(df) == 1000000
+
+
+def test_check_connection():
+    """Check connection to database."""
+
+    ch = ClickHouse(
+        login="click",
+        password="click",  # noqa: S106
+    )
+
+    assert ch.check_connection_to_database() is True
