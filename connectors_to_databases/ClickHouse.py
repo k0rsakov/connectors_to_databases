@@ -1,10 +1,10 @@
-from urllib.parse import quote
+from collections.abc import Sequence
 
-from sqlalchemy import create_engine, engine
+import clickhouse_connect
+import pandas as pd
 
-from .BaseOperator import BaseOperator
-
-# TODO: Change sqlalchemy to clickhouse-driver
+from connectors_to_databases.BaseOperator import BaseOperator
+from connectors_to_databases.TypeHinting import SQLQuery
 
 
 class ClickHouse(BaseOperator):
@@ -31,9 +31,73 @@ class ClickHouse(BaseOperator):
         self._password = password
         self._port = port
 
-    def _authorization_database(self) -> engine.base.Engine:
-        """Creating connector engine to database ClickHouse.""" # noqa D401
+    def _authorization_database(self) -> clickhouse_connect.driver.httpclient.Client:
+        """Creating connector engine to database ClickHouse."""  # noqa D401
 
-        engine_str = f"clickhouse://{self._login}:{quote(self._password)}@{self._host}:{self._port}/default"
+        return clickhouse_connect.get_client(
+            host=self._host,
+            port=self._port,
+            username=self._login,
+            password=self._password,
+        )
 
-        return create_engine(engine_str)
+    def execute_script(
+            self,
+            manual_sql_script: SQLQuery = None,
+    ) -> None:
+        """
+        Execute manual scripts (INSERT, TRUNCATE, DROP, CREATE, etc.). Other than SELECT.
+
+        :param manual_sql_script: query with manual script; default `''`.
+        :return: None.
+        """
+
+        ch = self._authorization_database()
+
+        ch.query(query=manual_sql_script)
+
+    def execute_to_df(
+            self,
+            sql_query: SQLQuery = None,
+    ) -> pd.DataFrame | Exception:
+        """
+        Getting data from database with SQL-query.
+
+        :param sql_query; default `''`.
+        :return: DataFrame with data from database.
+        """  # noqa D415
+
+        ch = self._authorization_database()
+
+        return ch.query_df(
+            query=sql_query,
+        )
+
+    def insert_df(
+            self,
+            df: pd.DataFrame = None,
+            table_name: str = None,
+            table_schema: str = None,
+            dtype: Sequence[str] | None = None,
+            **kwargs,
+    ) -> None:
+        """
+        Inserting data from dataframe to database.
+
+        Does not create a table if not exists.
+
+        :param df: dataframe with data; default None.
+        :param table_name: name of table; default None.
+        :param table_schema: name of schema; default None.
+        :param dtype: ClickHouse column type names; default None.
+        :return: None,
+        """  # noqa: D401
+
+        ch = self._authorization_database()
+
+        ch.insert_df(
+            df=df,
+            table=table_name,
+            database=table_schema,
+            column_type_names=dtype,
+        )
