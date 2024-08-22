@@ -1,6 +1,31 @@
+import uuid
+
 import pandas as pd
 
 from connectors_to_databases.ClickHouse import ClickHouse
+
+
+# TODO: add fixtures
+def test_get_uri_and_drop_test_table():
+    """Checking for getting uri for use outside class methods."""
+
+    ch = ClickHouse(
+        login="click",
+        password="click",  # noqa: S106
+    )
+
+    ch.get_uri().query("DROP TABLE IF EXISTS test")
+
+
+def test_get_uri_and_drop_test_uuid_table():
+    """Checking for getting uri for use outside class methods."""
+
+    ch = ClickHouse(
+        login="click",
+        password="click",  # noqa: S106
+    )
+
+    ch.get_uri().query("DROP TABLE IF EXISTS test_uuid")
 
 
 def test_execute_script():
@@ -16,7 +41,7 @@ def test_execute_script():
 
     ch.execute_script(
         """
-        CREATE TABLE test
+        CREATE TABLE IF NOT EXISTS test
         (
             value Int64
         )
@@ -38,6 +63,7 @@ def test_execute_script():
     )
 
     assert len(df) == 1
+    assert df.table_name[0] == "test"
 
 
 def test_insert_ch_table():
@@ -52,7 +78,6 @@ def test_insert_ch_table():
     df = pd.DataFrame(d)
     ch.insert_df(
         df=df,
-        chunksize=None,
         table_name="test",
     )
 
@@ -75,12 +100,45 @@ def test_execute_df():
     assert isinstance(df, pd.DataFrame)
 
 
-def test_get_uri():
-    """Checking for getting uri for use outside class methods."""
+def test_insert_ch_table_with_dtype():
+    """Checking the method for inserting data with dtype."""
 
     ch = ClickHouse(
         login="click",
         password="click",  # noqa: S106
     )
 
-    ch.get_uri().execute("DROP TABLE IF EXISTS test")
+    ch.execute_script(
+        """
+        CREATE TABLE IF NOT EXISTS test_uuid
+        (
+            value UUID
+        )
+        ENGINE = MergeTree
+        ORDER BY
+        value
+        """,
+    )
+
+    d = {"value": [str(uuid.uuid4()) for i in range(1000000)]}
+    df = pd.DataFrame(d)
+    ch.insert_df(
+        df=df,
+        table_name="test_uuid",
+        dtype=["UUID"],
+    )
+
+    df = ch.execute_to_df("SELECT * FROM test_uuid")
+
+    assert len(df) == 1000000
+
+
+def test_check_connection():
+    """Check connection to database."""
+
+    ch = ClickHouse(
+        login="click",
+        password="click",  # noqa: S106
+    )
+
+    assert ch.check_connection_to_database() is True

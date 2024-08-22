@@ -9,10 +9,14 @@ For the tests to work correctly, they must be run from the root folder of the
 
 The commands for running tests for each module are described below.
 
-To install pytest in your environment, run the command:
+To install pytest in your environment
+
+## All test
+
+To run all tests, run the command:
 
 ```bash
-pip install pytest==7.4.1
+python -m pytest tests/
 ```
 
 ## ClickHouse
@@ -20,7 +24,7 @@ pip install pytest==7.4.1
 To run ClickHouse tests, run the command:
 
 ```bash
-python -m pytest tests/clickhouse/test_module_clickhouse.py
+python -m pytest tests/clickhouse/
 ```
 
 ## MariaDB
@@ -28,7 +32,7 @@ python -m pytest tests/clickhouse/test_module_clickhouse.py
 To run MariaDB tests, run the command:
 
 ```bash
-python -m pytest tests/mariadb/test_module_mariadb.py
+python -m pytest tests/mariadb/
 ```
 
 ## MySQL
@@ -36,7 +40,7 @@ python -m pytest tests/mariadb/test_module_mariadb.py
 To run MySQL tests, run the command:
 
 ```bash
-python -m pytest tests/mysql/test_module_mysql.py
+python -m pytest tests/mysql/
 ```
 
 ## PostgreSQL
@@ -44,5 +48,7 @@ python -m pytest tests/mysql/test_module_mysql.py
 To run PostgreSQL tests, run the command:
 
 ```bash
-python -m pytest tests/postgresql/test_module_postgresql.py
+python -m pytest tests/postgresql/
 ```
+
+

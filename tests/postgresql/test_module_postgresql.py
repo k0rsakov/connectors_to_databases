@@ -1,6 +1,21 @@
 import pandas as pd
+from sqlalchemy import text
 
 from connectors_to_databases.PostgreSQL import PostgreSQL
+
+
+# TODO: add fixtures
+def test_execute_script_drop():
+    """
+    Checking the script for execution.
+
+    The test drop tables before tests.
+    """
+    pg = PostgreSQL(
+        port=1,
+    )
+
+    pg.execute_script("DROP TABLE IF EXISTS test")
 
 
 def test_execute_script():
@@ -18,7 +33,7 @@ def test_execute_script():
     df = pg.execute_to_df(
         """
         SELECT
-            *
+            table_name
         FROM
             information_schema."tables" AS t
         WHERE
@@ -28,6 +43,7 @@ def test_execute_script():
     )
 
     assert len(df) == 1
+    assert df.table_name[0] == "test"
 
 
 def test_insert_pg_table():
@@ -62,10 +78,11 @@ def test_execute_df():
 
 
 def test_get_uri():
-    """Checking for getting a uri for use outside class methods."""
+    """Checking for getting uri for use outside class methods."""
 
     pg = PostgreSQL(
         port=1,
     )
 
-    pg.get_uri().execute("DROP TABLE IF EXISTS test")
+    with pg.get_uri().begin() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS test"))

@@ -36,7 +36,7 @@ class MariaDB(BaseOperator):
         """Creating connector engine to database MariaDB.""" # noqa D401
 
         # mariadb+mariadbconnector
-        engine_str = f"mariadb+pymysql://" \
+        engine_str = f"mysql+pymysql://" \
                      f"{self._login}:{quote(self._password)}@{self._host}:{self._port}/" \
                      f"{self._database}"
 
