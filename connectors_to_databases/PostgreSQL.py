@@ -5,8 +5,10 @@ import pandas as pd
 from sqlalchemy import create_engine, engine
 
 from connectors_to_databases.BaseOperator import BaseOperator
-
-from .helper_functions.function_list import list_values_in_str_with_double_quotes, list_values_in_str_with_single_quotes
+from connectors_to_databases.helper_functions.function_list import (
+    list_values_in_str_with_double_quotes,
+    list_values_in_str_with_single_quotes,
+)
 
 
 class PostgreSQL(BaseOperator):

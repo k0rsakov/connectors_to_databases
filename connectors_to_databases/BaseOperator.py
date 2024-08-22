@@ -4,7 +4,7 @@ from urllib.parse import quote
 import pandas as pd
 from sqlalchemy import create_engine, engine, text
 
-from .TypeHinting import SQLQuery
+from connectors_to_databases.TypeHinting import SQLQuery
 
 
 class BaseOperator(ABC):
