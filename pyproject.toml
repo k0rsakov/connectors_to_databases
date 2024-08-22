@@ -84,6 +84,7 @@ numpy = "1.26.4"
 psycopg2-binary = "^2.9.9"
 clickhouse-connect = "^0.7.18"
 pymysql = "^1.1.1"
+cryptography = "43.0.0"
 #mariadb = "^1.1.7"
 
 [tool.poetry.group.dev.dependencies]
@@ -96,4 +97,5 @@ clickhouse-connect = "^0.7.18"
 pymysql = "^1.1.1"
 ruff = "^0.6.1"
 pytest = "^8.3.2"
+cryptography = "43.0.0"
 #mariadb = "^1.1.7"

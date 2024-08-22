@@ -3,7 +3,6 @@ from collections.abc import Sequence
 import clickhouse_connect
 import pandas as pd
 from clickhouse_connect.driver import Client
-from sqlalchemy import engine
 
 from connectors_to_databases.BaseOperator import BaseOperator
 from connectors_to_databases.TypeHinting import SQLQuery

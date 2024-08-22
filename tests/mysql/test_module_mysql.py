@@ -1,6 +1,22 @@
 import pandas as pd
+from sqlalchemy import text
 
 from connectors_to_databases.MySQL import MySQL
+
+
+# TODO: add fixtures
+def test_execute_script_drop():
+    """
+    Checking the script for execution.
+
+    The test drop tables before tests.
+    """
+    m = MySQL(
+        host="127.0.0.1",
+        port=3,
+    )
+
+    m.execute_script("DROP TABLE IF EXISTS test")
 
 
 def test_connection():
@@ -13,7 +29,7 @@ def test_connection():
 
     check = m.check_connection_to_database()
 
-    assert check
+    assert check is True
 
 
 def test_execute_script():
@@ -83,4 +99,6 @@ def test_get_uri():
         port=3,
     )
 
-    m.get_uri().execute("DROP TABLE IF EXISTS test")
+    with m.get_uri().begin() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS test"))
+
