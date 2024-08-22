@@ -1,6 +1,22 @@
 import pandas as pd
+from sqlalchemy import text
 
 from connectors_to_databases.MariaDB import MariaDB
+
+
+# TODO: add fixtures
+def test_execute_script_drop():
+    """
+    Checking the script for execution.
+
+    The test drop tables before tests.
+    """
+    m = MariaDB(
+        host="127.0.0.1",
+        port=3,
+    )
+
+    m.execute_script("DROP TABLE IF EXISTS test")
 
 
 def test_connection():
@@ -12,7 +28,7 @@ def test_connection():
 
     check = m.check_connection_to_database()
 
-    assert check
+    assert check is True
 
 
 def test_execute_script():
@@ -37,6 +53,7 @@ def test_execute_script():
     )
 
     assert len(df) == 1
+    assert df.Tables_in_sys[0] == "test"
 
 
 def test_insert_m_table():
@@ -82,4 +99,5 @@ def test_get_uri():
         port=2,
     )
 
-    m.get_uri().execute("DROP TABLE IF EXISTS test")
+    with m.get_uri().begin() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS test"))
